@@ -1,0 +1,57 @@
+[
+  {
+    "restaurantName": "Blackwood Coffee",
+    "address": "235 Morningside Rd, Edinburgh EH10 4QT",
+    "position": {
+      "lat": 55.9291959,
+      "lng": -3.210628
+    },
+    "ratings": [
+      {
+        "stars": 4,
+        "comment": "Love the coffee, food not so much."
+      },
+      {
+        "stars": 5,
+        "comment": "I'm a regular, that should explain my rating."
+      }
+    ]
+  },
+
+  {
+    "restaurantName": "Piecebox",
+    "address": "2 Polwarth Cres, Edinburgh EH11 1HW",
+    "position": {
+      "lat": 55.9373466,
+      "lng": -3.2159337
+    },
+    "ratings": [
+      {
+        "stars": 5,
+        "comment": "Great spot to meet with your friends, tasty food and lovely coffee."
+      },
+      {
+        "stars": 3,
+        "comment": "My sandwich was too cold. I'll come back to try toasties though."
+      }
+    ]
+  },
+  {
+    "restaurantName": "bia bistrot",
+    "address": "9 Colinton Rd, Edinburgh EH10 5DP",
+    "position": {
+      "lat": 55.933769,
+      "lng": -3.210889
+    },
+    "ratings": [
+      {
+        "stars": 5,
+        "comment": "Best French restaurant in the city!"
+      },
+      {
+        "stars": 4,
+        "comment": "Would dine here more often if it wasn't for the prices."
+      }
+    ]
+  }
+]

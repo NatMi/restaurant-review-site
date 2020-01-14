@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css?family=Lato&display=swap");
+h3 {
+  margin: 0 0 5vh 5vh;
+  font-family: "Lato", sans-serif;
+  text-align: center;
+}
+.restaurantCard {
+  display: flex;
+  justify-content: space-around;
+  object-fit: cover;
+  object-position: 20% 10px;
+  height: 150px;
+  background-color: #ffffff;
+  font-family: "Lato", sans-serif;
+  font-size: 13px;
+  line-height: 0.5rem;
+  text-align: left;
+  padding: 0.7rem;
+  border: 1px solid #97979728;
+  box-shadow: 3px 3px 3px #dddddd;
+  transition: all 0.5s;
+}
+.restaurantCard:hover {
+  background-color: #f7f7f7;
+  border: 1px solid #58699c59;
+}
+.restaurantCard:active {
+  border: 1.5px solid green;
+}
+.restaurantName {
+  margin: 0px;
+}
+.restaurantAddress {
+}
+/* .restaurantRating {
+} */
+.restaurantCardStreetView {
+  width: 50%;
+  overflow: hidden;
+}
+.streetViewImg {
+  width: 100%;
+  height: auto;
+}
+
+.restaurantCardInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 40%;
+}
+
+.restaurantBtnContainer {
+  display: flex;
+  justify-content: center;
+}
+.btnRestaurantReviews {
+  box-shadow: inset 0px 39px 0px -24px #248bcf;
+  background-color: #016ac0;
+  border-radius: 4px;
+  border: none;
+  color: #ffffff;
+  padding: 6px 6px;
+  text-decoration: none;
+  width: 7em;
+  transition: all 0.5s;
+  margin-right: 1em;
+}
+.btnAddRestaurantReviews {
+  box-shadow: inset 0px 39px 0px -24px #24704c;
+  background-color: #0f4c2e;
+  border-radius: 4px;
+  border: none;
+  color: #ffffff;
+  padding: 6px 6px;
+  text-decoration: none;
+  width: 7em;
+  transition: all 0.5s;
+}
+button:focus {
+  outline: 0;
+}
+button:active {
+  color: green;
+}
+
+.btnRestaurantReviews:hover,
+.btnAddRestaurantReviews:hover {
+  box-shadow: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .restaurantCard {
+    height: auto;
+  }
+  .restaurantCardStreetView,
+  .restaurantCardInfo {
+    width: 100%;
+  }
+  .btnRestaurantReviews,
+  .btnAddRestaurantReviews {
+    width: 7em;
+  }
+}
