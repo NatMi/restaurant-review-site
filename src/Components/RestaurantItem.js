@@ -10,7 +10,7 @@ class RestaurantItem extends Component {
         {this.props.getVisibleRestaurants.map(restaurant => {
           return (
             /*restaurant card: */
-            <div className="restaurantCard">
+            <div className="restaurantCard" key={restaurant.place_id}>
               <div className="restaurantCardInfo">
                 <h4 className="restaurantName">{restaurant.name}</h4>
                 <p className="restaurantRating">
