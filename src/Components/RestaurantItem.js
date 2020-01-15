@@ -4,7 +4,7 @@ import "../Styles/restaurantItem.css";
 class RestaurantItem extends Component {
   componentDidUpdate() {
     let newRestaurantCard = () => {
-      this.props.visibleRestaurants.map(restaurant => {
+      this.props.getVisibleRestaurants.map(restaurant => {
         console.log(restaurant.name);
       });
     };
@@ -13,7 +13,7 @@ class RestaurantItem extends Component {
   render() {
     return (
       <div id="restaurantList">
-        <h3>Restaurants found: {this.props.visibleRestaurants.length}</h3>
+        <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
         {/* restaurant card start: */}
         <div className="restaurantCard">
           <div className="restaurantCardInfo">

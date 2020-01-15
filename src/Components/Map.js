@@ -11,11 +11,11 @@ class Map extends Component {
       usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default, updated once user shares their location
       mapCenter: "",
       mapBounds: "",
-      visibleRestaurants: [],
+      getVisibleRestaurants: [],
       restaurantMarkerList: []
     };
     this.sendData = () => {
-      this.props.sendRestaurantData(this.state.visibleRestaurants);
+      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
     };
     this.onScriptLoad = this.onScriptLoad.bind(this);
   }
@@ -74,7 +74,7 @@ class Map extends Component {
             let place = results[i];
             //update state with visible restaurants
             this.setState(prevState => ({
-              visibleRestaurants: [...prevState.visibleRestaurants, place]
+              getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
             }));
             this.sendData();
             //add restaurant marker
@@ -115,7 +115,7 @@ class Map extends Component {
 
       newMap.addListener("idle", () => {
         setMapOnMarkers(null);
-        this.setState({ visibleRestaurants: [], restaurantMarkerList: [] });
+        this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
 
         searchBounds = {
           bounds: newMap.getBounds(),

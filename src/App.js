@@ -10,20 +10,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visibleRestaurants: [],
+      getVisibleRestaurants: [],
       restaurantMarkerList: []
     };
     this.mapCallback = mapData => {
-      this.setState({ visibleRestaurants: mapData });
+      this.setState({ getVisibleRestaurants: mapData });
     };
   }
-
-  // mapCallback = datafromMapComponent => {
-  //   this.setState = {
-  //     visibleRestaurants: datafromMapComponent
-  //   };
-  //   console.log(this.state.visibleRestaurants.length);
-  // };
 
   render() {
     return (
@@ -35,7 +28,7 @@ class App extends Component {
           </section>
           <section id="restaurantListArea">
             <RestaurantItem
-              visibleRestaurants={this.state.visibleRestaurants}
+              getVisibleRestaurants={this.state.getVisibleRestaurants}
             />
           </section>
 
