@@ -1,13 +1,23 @@
 import React, { Component } from "react";
 import "../Styles/restaurantItem.css";
+import googleMapsKey from "../Data/googleMapsKey.json";
 
 class RestaurantItem extends Component {
+  restaurantCardClick = () => {};
   render() {
     return (
       <div id="restaurantList">
         <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
 
         {this.props.getVisibleRestaurants.map(restaurant => {
+          let streetViewUrl =
+            "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" +
+            restaurant.geometry.location.lat() +
+            "," +
+            restaurant.geometry.location.lng() +
+            "&fov=80&heading=70&pitch=0&key=" +
+            googleMapsKey.apiKey;
+
           return (
             /*restaurant card: */
             <div className="restaurantCard" key={restaurant.place_id}>
@@ -28,9 +38,9 @@ class RestaurantItem extends Component {
 
               <div className="restaurantCardStreetView">
                 <img
-                  alt="piecebox restaurant"
+                  alt={restaurant.name}
                   className="streetViewImg"
-                  src="https://s.nimbusweb.me/attachment/3650970/w1r1sl67ldnrf8fpioly/B3uOd5nTS73LnLOL/screenshot-www.google.com-2019.12.16-19_52_09.jpg"
+                  src={streetViewUrl}
                 ></img>
               </div>
             </div>
