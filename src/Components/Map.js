@@ -14,6 +14,7 @@ class Map extends Component {
       getVisibleRestaurants: [],
       restaurantMarkerList: []
     };
+    //sets sendRestaurantData property to contain restaurant data from current state
     this.sendData = () => {
       this.props.sendRestaurantData(this.state.getVisibleRestaurants);
     };

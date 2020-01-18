@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import "../Styles/restaurantItem.css";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
-class RestaurantItem extends Component {
-  restaurantCardClick = () => {};
+class RestaurantSidebar extends Component {
+  componentDidUpdate() {
+    if (this.props.getVisibleRestaurants.length <= 0) {
+      return <h3>Sorry, no restaurants found in this area.</h3>;
+    } else {
+    }
+  }
   render() {
     return (
       <div id="restaurantList">
@@ -50,4 +55,4 @@ class RestaurantItem extends Component {
     );
   }
 }
-export default RestaurantItem;
+export default RestaurantSidebar;
