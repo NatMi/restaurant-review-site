@@ -95,13 +95,16 @@ class Map extends Component {
           }
           console.log(
             `number of restaurants found: ` +
-              this.state.restaurantMarkerList.length
+              this.state.getVisibleRestaurants.length
           );
         }
         if (
           status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS
         ) {
-          console.log("no restaurants found in this area");
+          console.log(
+            "no restaurants found in this area " +
+              this.state.getVisibleRestaurants.length
+          );
         }
       };
 
