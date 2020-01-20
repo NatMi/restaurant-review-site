@@ -28,9 +28,11 @@ h3 {
   border: 1.5px solid green;
 }
 .restaurantName {
-  margin: 0px;
+  line-height: 1rem;
+  margin: 0;
 }
 .restaurantAddress {
+  line-height: 1rem;
 }
 /* .restaurantRating {
 } */
