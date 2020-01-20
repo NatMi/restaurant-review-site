@@ -124,10 +124,6 @@ class Map extends Component {
           event.latLng.lat(),
           event.latLng.lng()
         );
-        // let infowindow = new window.google.maps.InfoWindow({
-        //   content: "want to add new restaurant?"
-        // });
-        // infowindow.open(newMap, event.target);
 
         console.log("clicked! " + newMapClick);
       });
