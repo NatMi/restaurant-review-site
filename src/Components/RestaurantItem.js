@@ -16,7 +16,7 @@ class RestaurantItem extends Component {
   render() {
     return (
       /*restaurant card: */
-      <div className="restaurantCard" key={this.props.restaurant.place_id}>
+      <div className="restaurantCard">
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
           <p className="restaurantRating">

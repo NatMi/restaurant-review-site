@@ -77,7 +77,6 @@ class Map extends Component {
             this.setState(prevState => ({
               getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
             }));
-            this.sendData();
             //add restaurant marker
             let restaurantMarker = new window.google.maps.Marker({
               position: place.geometry.location,
@@ -93,19 +92,9 @@ class Map extends Component {
               ]
             }));
           }
-          console.log(
-            `number of restaurants found: ` +
-              this.state.getVisibleRestaurants.length
-          );
         }
-        if (
-          status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS
-        ) {
-          console.log(
-            "no restaurants found in this area " +
-              this.state.getVisibleRestaurants.length
-          );
-        }
+        // send updated restaurant data to App component
+        this.sendData();
       };
 
       service.nearbySearch(searchBounds, showNearbyRestaurants);
