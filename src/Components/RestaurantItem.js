@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "../Styles/restaurantSidebar.css";
+import ItemReviews from "./ItemReviews.js";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
 class RestaurantItem extends Component {
@@ -13,6 +14,8 @@ class RestaurantItem extends Component {
       googleMapsKey.apiKey
     );
   }
+  renderReviews = () => {};
+
   render() {
     return (
       /*restaurant card: */
@@ -25,7 +28,12 @@ class RestaurantItem extends Component {
           </p>
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
-            <button className="btnRestaurantReviews">Read reviews</button>{" "}
+            <button
+              className="btnRestaurantReviews"
+              onClick={this.renderReviews}
+            >
+              Read reviews
+            </button>{" "}
             <button className="btnAddRestaurantReviews">Add review</button>
           </div>
         </div>
