@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 // import { render } from "react-dom";
-// import Marker from "./Marker.js";
 import restaurantList from "../Data/restaurantList.json";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
@@ -69,7 +68,7 @@ class Map extends Component {
         type: ["restaurant"]
       };
 
-      let showNearbyRestaurants = (results, status) => {
+      let getNearbyRestaurants = (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           for (let i = 0; i < results.length; i++) {
             let place = results[i];
@@ -97,8 +96,18 @@ class Map extends Component {
         this.sendData();
       };
 
-      service.nearbySearch(searchBounds, showNearbyRestaurants);
+      service.nearbySearch(searchBounds, getNearbyRestaurants);
+      // /// TEST - getting reviews for each found restaurant
+      // let requestPlaceDetails = {
+      //   placeId: place.place_id
+      // };
 
+      // service.getDetails(requestPlaceDetails, function(place, status) {
+      //   if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+      //     console.log(place.reviews);
+      //   }
+      // });
+      // /////////////////// test finish
       let setMapOnMarkers = map => {
         for (var i = 0; i < this.state.restaurantMarkerList.length; i++) {
           this.state.restaurantMarkerList[i].setMap(map);
@@ -115,7 +124,7 @@ class Map extends Component {
           type: ["restaurant"]
         };
 
-        service.nearbySearch(searchBounds, showNearbyRestaurants);
+        service.nearbySearch(searchBounds, getNearbyRestaurants);
       });
 
       // getting coordinates on click. TODO: show info window
