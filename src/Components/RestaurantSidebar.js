@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import RestaurantItem from "./RestaurantItem.js";
+import ItemReviews from "./ItemReviews.js";
 import "../Styles/restaurantSidebar.css";
 
 class RestaurantSidebar extends Component {
@@ -20,11 +21,11 @@ class RestaurantSidebar extends Component {
   }
 
   render() {
-    if (this.state.currentRestaurantList.length > 0) {
+    if (this.props.getVisibleRestaurants.length > 0) {
       return (
         <div id="restaurantList">
-          <h3>Restaurants found: {this.state.currentRestaurantList.length}</h3>
-          {this.state.currentRestaurantList.map(restaurant => (
+          <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
+          {this.props.getVisibleRestaurants.map(restaurant => (
             <RestaurantItem restaurant={restaurant} key={restaurant.place_id} />
           ))}
         </div>
@@ -33,6 +34,7 @@ class RestaurantSidebar extends Component {
       return (
         <div id="restaurantList">
           <h3>No restaurants found in this area.</h3>
+          <ItemReviews />
         </div>
       );
     }
