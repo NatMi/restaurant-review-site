@@ -1,0 +1,19 @@
+.restaurantReviewCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #ffffff;
+  font-family: "Lato", sans-serif;
+  font-size: 13px;
+  line-height: 1rem;
+  text-align: left;
+  padding: 0.7rem;
+  border: 1px solid #97979728;
+  box-shadow: 3px 3px 3px #dddddd;
+  transition: all 0.5s;
+}
+
+.authorName {
+  font-weight: bold;
+  font-size: 14px;
+}
