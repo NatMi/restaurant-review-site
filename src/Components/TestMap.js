@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 // import { render } from "react-dom";
 import restaurantList from "../Data/restaurantList.json";
-import googleMapsKey from "../Data/googleMapsKey.json";
 
 class TestMap extends Component {
   constructor(props) {
@@ -17,10 +16,9 @@ class TestMap extends Component {
     this.sendData = () => {
       this.props.sendRestaurantData(this.state.getVisibleRestaurants);
     };
-    this.onScriptLoad = this.onScriptLoad.bind(this);
   }
 
-  onScriptLoad() {
+  componentDidMount = () => {
     // DRAW MAP with id attribute specified in App component
     let newMap = new window.google.maps.Map(
       document.getElementById(this.props.id),
@@ -155,26 +153,7 @@ class TestMap extends Component {
     } else {
       console.log("geolocation unavailable");
     }
-  }
-
-  componentDidMount() {
-    if (!window.google) {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src =
-        "https://maps.googleapis.com/maps/api/js?key=" +
-        googleMapsKey.apiKey +
-        "&libraries=places";
-      var x = document.getElementsByTagName("script")[0];
-      x.parentNode.insertBefore(script, x);
-      // Once google.maps API finished loading, launch onScriptLoad() function to access it:
-      script.addEventListener("load", e => {
-        this.onScriptLoad();
-      });
-    } else {
-      this.onScriptLoad();
-    }
-  }
+  };
 
   render() {
     return <div style={{ width: "100%", height: "100%" }} id={this.props.id} />;
