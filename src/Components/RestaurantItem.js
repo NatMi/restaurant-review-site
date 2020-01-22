@@ -4,7 +4,16 @@ import ItemReviews from "./ItemReviews.js";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
 class RestaurantItem extends Component {
-  streetViewUrl() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      reviews: []
+    };
+    this.requestReviews = () => {
+      this.props.requestForActiveStatus(this.props.restaurant);
+    };
+  }
+  streetViewUrl = () => {
     return (
       "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" +
       this.props.restaurant.geometry.location.lat() +
@@ -13,8 +22,7 @@ class RestaurantItem extends Component {
       "&fov=80&heading=70&pitch=0&key=" +
       googleMapsKey.apiKey
     );
-  }
-  renderReviews = () => {};
+  };
 
   render() {
     return (
@@ -30,7 +38,7 @@ class RestaurantItem extends Component {
           <div className="restaurantBtnContainer">
             <button
               className="btnRestaurantReviews"
-              onClick={this.renderReviews}
+              onClick={this.requestReviews}
             >
               Read reviews
             </button>{" "}

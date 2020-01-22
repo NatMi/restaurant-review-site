@@ -13,7 +13,8 @@ class App extends Component {
     this.state = {
       googleMapsLoaded: false,
       visibleRestaurants: [],
-      restaurantMarkerList: []
+      restaurantMarkerList: [],
+      activeRestaurant: []
     };
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });

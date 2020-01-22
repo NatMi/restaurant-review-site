@@ -7,16 +7,27 @@ class RestaurantSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentRestaurantList: []
+      currentRestaurantList: [],
+      activeRestaurant: {
+        name: "No active restaurant"
+      }
+    };
+    this.requestReviewsForActiveItem = restaurant => {
+      this.setState({ activeRestaurant: restaurant });
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
     // only update if the data has changed
+    // update check on restaurant list:
     if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
       this.setState({
         currentRestaurantList: this.props.getVisibleRestaurants
       });
+    }
+    //update check on
+    if (prevState.activeRestaurant !== this.state.activeRestaurant) {
+      console.log("active restaurant: " + this.state.activeRestaurant.name);
     }
   }
 
@@ -26,7 +37,11 @@ class RestaurantSidebar extends Component {
         <div id="restaurantList">
           <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
           {this.props.getVisibleRestaurants.map(restaurant => (
-            <RestaurantItem restaurant={restaurant} key={restaurant.place_id} />
+            <RestaurantItem
+              restaurant={restaurant}
+              key={restaurant.place_id}
+              requestForActiveStatus={this.requestReviewsForActiveItem}
+            />
           ))}
         </div>
       );
