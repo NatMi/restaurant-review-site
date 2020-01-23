@@ -1,7 +1,7 @@
 [
   {
     "name": "Blackwood Coffee",
-    "address": "235 Morningside Rd, Edinburgh EH10 4QT",
+    "vicinity": "235 Morningside Rd, Edinburgh EH10 4QT",
     "geometry": {
       "location": {
         "lat": 55.9291959,
@@ -26,11 +26,11 @@
 
   {
     "name": "Piecebox",
-    "address": "2 Polwarth Cres, Edinburgh EH11 1HW",
+    "vicinity": "2 Polwarth Cres, Edinburgh EH11 1HW",
     "geometry": {
       "location": {
-        "lat": 55.9373466,
-        "lng": -3.2159337
+        "lat": 55.937789812016774,
+        "lng": -3.2164468246839584
       }
     },
     "rating": 4,
@@ -50,7 +50,7 @@
   },
   {
     "name": "bia bistrot",
-    "address": "9 Colinton Rd, Edinburgh EH10 5DP",
+    "vicinity": "9 Colinton Rd, Edinburgh EH10 5DP",
     "geometry": {
       "location": {
         "lat": 55.933769,
