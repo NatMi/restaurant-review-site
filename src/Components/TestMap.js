@@ -132,6 +132,13 @@ class TestMap extends Component {
       this.state.restaurantMarkerList[i].setMap(mapName);
     }
   }
+  componentDidUpdate() {
+    if (this.props.activeRestaurant) {
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+    } else {
+      console.log("Map didn't receive the active restaurant info");
+    }
+  }
 
   renderMarkers() {
     //user's location marker

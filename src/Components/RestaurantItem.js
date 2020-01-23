@@ -7,18 +7,23 @@ class RestaurantItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isActive: false,
       reviews: []
     };
-    this.requestReviews = () => {
-      this.props.requestForActiveStatus(this.props.restaurant);
+    this.requestReviewsForItem = () => {
+      this.props.requestForActiveStatusToSidebar(this.props.restaurant);
+      this.setState({
+        isActive: true
+      });
+      console.log(this.props.restaurant.name + " is active!");
     };
   }
   streetViewUrl = () => {
     return (
       "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" +
-      this.props.restaurant.geometry.location.lat() +
+      this.props.restaurant.geometry.location.lat +
       "," +
-      this.props.restaurant.geometry.location.lng() +
+      this.props.restaurant.geometry.location.lng +
       "&fov=80&heading=70&pitch=0&key=" +
       googleMapsKey.apiKey
     );
@@ -27,7 +32,7 @@ class RestaurantItem extends Component {
   render() {
     return (
       /*restaurant card: */
-      <div className="restaurantCard">
+      <div className="restaurantCard" onClick={this.requestReviewsForItem}>
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
           <p className="restaurantRating">
@@ -38,7 +43,7 @@ class RestaurantItem extends Component {
           <div className="restaurantBtnContainer">
             <button
               className="btnRestaurantReviews"
-              onClick={this.requestReviews}
+              onClick={this.requestReviewsForItem}
             >
               Read reviews
             </button>{" "}
