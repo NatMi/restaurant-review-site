@@ -19,11 +19,21 @@ class App extends Component {
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
     };
+    this.receiveActiveStatusRequestFromSidebar = restaurant => {
+      this.setState({ activeRestaurant: restaurant });
+    };
   }
 
   googleMapsScriptLoaded = () => {
     this.setState({ googleMapsLoaded: true });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    //update check on
+    if (prevState.activeRestaurant !== this.state.activeRestaurant) {
+      console.log("app active restaurant: " + this.state.activeRestaurant.name);
+    }
+  }
 
   componentDidMount = () => {
     if (!window.google) {
@@ -55,11 +65,15 @@ class App extends Component {
               <TestMap
                 id="googleMap"
                 sendRestaurantData={this.getRestaurantData}
+                activeRestaurant={this.state.activeRestaurant}
               />
             </section>
             <section id="restaurantListArea">
               <RestaurantSidebar
                 getVisibleRestaurants={this.state.visibleRestaurants}
+                requestForActiveStatusToApp={
+                  this.receiveActiveStatusRequestFromSidebar
+                }
               />
             </section>
           </div>
