@@ -1,17 +1,23 @@
 [
   {
-    "restaurantName": "Blackwood Coffee",
+    "name": "Blackwood Coffee",
     "address": "235 Morningside Rd, Edinburgh EH10 4QT",
-    "position": {
-      "lat": 55.9291959,
-      "lng": -3.210628
+    "geometry": {
+      "location": {
+        "lat": 55.9291959,
+        "lng": -3.210628
+      }
     },
-    "ratings": [
+    "rating": 4.5,
+    "user_ratings_total": 2,
+    "reviews": [
       {
+        "author_name": "Avocado Tree",
         "stars": 4,
         "comment": "Love the coffee, food not so much."
       },
       {
+        "author_name": "Daniel Wallace",
         "stars": 5,
         "comment": "I'm a regular, that should explain my rating."
       }
@@ -19,36 +25,48 @@
   },
 
   {
-    "restaurantName": "Piecebox",
+    "name": "Piecebox",
     "address": "2 Polwarth Cres, Edinburgh EH11 1HW",
-    "position": {
-      "lat": 55.9373466,
-      "lng": -3.2159337
+    "geometry": {
+      "location": {
+        "lat": 55.9373466,
+        "lng": -3.2159337
+      }
     },
-    "ratings": [
+    "rating": 4,
+    "user_ratings_total": 2,
+    "reviews": [
       {
+        "author_name": "Walter Mischel",
         "stars": 5,
         "comment": "Great spot to meet with your friends, tasty food and lovely coffee."
       },
       {
+        "author_name": "Joanne Harris",
         "stars": 3,
         "comment": "My sandwich was too cold. I'll come back to try toasties though."
       }
     ]
   },
   {
-    "restaurantName": "bia bistrot",
+    "name": "bia bistrot",
     "address": "9 Colinton Rd, Edinburgh EH10 5DP",
-    "position": {
-      "lat": 55.933769,
-      "lng": -3.210889
+    "geometry": {
+      "location": {
+        "lat": 55.933769,
+        "lng": -3.210889
+      }
     },
-    "ratings": [
+    "rating": 4.5,
+    "user_ratings_total": 2,
+    "reviews": [
       {
+        "author_name": "John Doe",
         "stars": 5,
         "comment": "Best French restaurant in the city!"
       },
       {
+        "author_name": "Anne Freud",
         "stars": 4,
         "comment": "Would dine here more often if it wasn't for the prices."
       }
