@@ -39,8 +39,22 @@ class TestMap extends Component {
     this.drawGoogleMap();
 
     let service = new window.google.maps.places.PlacesService(this.state.map);
+    // updating  map state property with user's position once geolocation query is succesfully resolved
 
-    // function which updates  map state property for user's position once geolocation query is succesfully resolved
+    let getNearbyRestaurants = (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        results.map(place => {
+          //update state with visible restaurants
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+          this.renderMarkers();
+        });
+      }
+      // send updated restaurant data to App component
+      this.sendData();
+    };
+
     let onPositionReceived = position => {
       this.setState({
         usersPosition: {
@@ -49,18 +63,10 @@ class TestMap extends Component {
         }
       });
 
-      //centre map on user's position:
+      //centre map component on user's position and update map bounds:
       this.state.map.setCenter(this.state.usersPosition);
-      // save new map bounds:
       this.setState({
         mapBounds: this.state.map.getBounds
-      });
-
-      //create marker with user's location details
-      let usersLocationMarker = new window.google.maps.Marker({
-        position: this.state.usersPosition,
-        map: this.state.map,
-        title: "Your current location"
       });
 
       // GOOGLE PLACES API
@@ -69,27 +75,9 @@ class TestMap extends Component {
         type: ["restaurant"]
       };
 
-      let getNearbyRestaurants = (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          results.map(place => {
-            //update state with visible restaurants
-            this.setState(prevState => ({
-              getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-            }));
-            this.renderMarkers();
-          });
-        }
-        // send updated restaurant data to App component
-        this.sendData();
-      };
-
       service.nearbySearch(searchBounds, getNearbyRestaurants);
       this.renderMarkers();
-      let setMapOnMarkers = map => {
-        for (let i = 0; i < this.state.restaurantMarkerList.length; i++) {
-          this.state.restaurantMarkerList[i].setMap(map);
-        }
-      };
+
       //   /// TEST - getting reviews for each found restaurant
       //   let requestPlaceDetails = {
       //     placeId: place.place_id
@@ -101,27 +89,6 @@ class TestMap extends Component {
       //     }
       //   });
       //   /////////////////// test finish
-      //MAP EVENT: "idle"
-
-      this.state.map.addListener("idle", () => {
-        setMapOnMarkers(null);
-        this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
-
-        searchBounds = {
-          bounds: this.state.map.getBounds(),
-          type: ["restaurant"]
-        };
-
-        service.nearbySearch(searchBounds, getNearbyRestaurants);
-
-        // create markers from json file list of restaurants
-        // restaurantList.map(place => {
-        //   this.setState(prevState => ({
-        //     getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-        //   }));
-        //   this.renderMarkers();
-        // });
-      });
 
       // getting coordinates on click. TODO: show info window
       this.state.map.addListener("click", function(event) {
@@ -140,9 +107,46 @@ class TestMap extends Component {
     } else {
       console.log("geolocation unavailable");
     }
+
+    //MAP EVENT: "idle"
+    this.state.map.addListener("idle", () => {
+      this.setMapOnMarkers(null);
+      this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
+
+      let searchBounds = {
+        bounds: this.state.map.getBounds(),
+        type: ["restaurant"]
+      };
+      service.nearbySearch(searchBounds, getNearbyRestaurants);
+
+      // create markers from json file list of restaurants
+      restaurantList.map(place => {
+        let check = this.state.map
+          .getBounds()
+          .contains(place.geometry.location);
+        if (check)
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+        this.renderMarkers();
+      });
+    });
   };
 
+  setMapOnMarkers(mapName) {
+    for (let i = 0; i < this.state.restaurantMarkerList.length; i++) {
+      this.state.restaurantMarkerList[i].setMap(mapName);
+    }
+  }
+
   renderMarkers() {
+    //user's location marker
+    new window.google.maps.Marker({
+      position: this.state.usersPosition,
+      map: this.state.map,
+      title: "Your current location"
+    });
+
     this.state.getVisibleRestaurants.map(restaurant => {
       //add restaurant marker
       let restaurantMarker = new window.google.maps.Marker({
