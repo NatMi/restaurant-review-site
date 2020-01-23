@@ -43,7 +43,7 @@ class TestMap extends Component {
 
     let getNearbyRestaurants = (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        results.map(place => {
+        results.forEach(place => {
           //update state with visible restaurants
           this.setState(prevState => ({
             getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
@@ -120,7 +120,7 @@ class TestMap extends Component {
       service.nearbySearch(searchBounds, getNearbyRestaurants);
 
       // create markers from json file list of restaurants
-      restaurantList.map(place => {
+      restaurantList.forEach(place => {
         let check = this.state.map
           .getBounds()
           .contains(place.geometry.location);
@@ -147,7 +147,7 @@ class TestMap extends Component {
       title: "Your current location"
     });
 
-    this.state.getVisibleRestaurants.map(restaurant => {
+    this.state.getVisibleRestaurants.forEach(restaurant => {
       //add restaurant marker
       let restaurantMarker = new window.google.maps.Marker({
         position: restaurant.geometry.location,
