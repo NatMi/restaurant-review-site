@@ -12,7 +12,7 @@ class RestaurantSidebar extends Component {
         name: "No active restaurant"
       }
     };
-    this.requestReviewsForActiveItem = restaurant => {
+    this.checkActiveRestaurant = restaurant => {
       this.setState({ activeRestaurant: restaurant });
     };
   }
@@ -40,7 +40,7 @@ class RestaurantSidebar extends Component {
             <RestaurantItem
               restaurant={restaurant}
               key={restaurant.place_id}
-              requestForActiveStatus={this.requestReviewsForActiveItem}
+              requestForActiveStatus={this.checkActiveRestaurant}
             />
           ))}
         </div>
