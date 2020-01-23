@@ -22,7 +22,9 @@ class App extends Component {
     };
     this.getReviewsForActiveItem = reviewsData => {
       this.setState({ activeRestaurantReviews: reviewsData });
-      console.log("App: " + this.state.activeRestaurantReviews.reviews);
+      console.log(
+        "App reviews loaded: " + this.state.activeRestaurantReviews.name
+      );
     };
     this.receiveActiveStatusRequestFromSidebar = restaurant => {
       this.setState({ activeRestaurant: restaurant });

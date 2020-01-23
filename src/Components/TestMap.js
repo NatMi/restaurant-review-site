@@ -137,9 +137,6 @@ class TestMap extends Component {
         });
         this.sendReviews();
       }
-      console.log(
-        "Loading reviews for: " + this.state.loadReviewsForActiveItem.name
-      );
     };
 
     this.service().getDetails(requestPlaceDetails, handleDetailsResults);
@@ -183,6 +180,16 @@ class TestMap extends Component {
           restaurantMarker
         ]
       }));
+      this.state.restaurantMarkerList.forEach(marker => {
+        marker.addListener("click", function(event) {
+          let newMapClick = new window.google.maps.Point(
+            event.latLng.lat(),
+            event.latLng.lng()
+          );
+
+          console.log(" marker clicked! " + newMapClick);
+        });
+      });
     });
   }
 
