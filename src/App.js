@@ -14,10 +14,15 @@ class App extends Component {
       googleMapsLoaded: false,
       visibleRestaurants: [],
       restaurantMarkerList: [],
-      activeRestaurant: []
+      activeRestaurant: [],
+      activeRestaurantReviews: []
     };
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
+    };
+    this.getReviewsForActiveItem = reviewsData => {
+      this.setState({ activeRestaurantReviews: reviewsData });
+      console.log("App: " + this.state.activeRestaurantReviews.reviews);
     };
     this.receiveActiveStatusRequestFromSidebar = restaurant => {
       this.setState({ activeRestaurant: restaurant });
@@ -65,6 +70,7 @@ class App extends Component {
               <TestMap
                 id="googleMap"
                 sendRestaurantData={this.getRestaurantData}
+                sendReviewsForActiveItem={this.getReviewsForActiveItem}
                 activeRestaurant={this.state.activeRestaurant}
               />
             </section>

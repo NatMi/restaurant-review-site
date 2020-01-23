@@ -10,10 +10,14 @@ class TestMap extends Component {
       mapCenter: [],
       mapBounds: [],
       getVisibleRestaurants: [],
-      restaurantMarkerList: []
+      restaurantMarkerList: [],
+      loadReviewsForActiveItem: []
     };
     this.sendData = () => {
       this.props.sendRestaurantData(this.state.getVisibleRestaurants);
+    };
+    this.sendReviews = () => {
+      this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
     };
     this.drawGoogleMap = () => {
       this.state.map = new window.google.maps.Map(
@@ -120,25 +124,36 @@ class TestMap extends Component {
       this.state.restaurantMarkerList[i].setMap(mapName);
     }
   }
-  componentDidUpdate() {
-    if (this.props.activeRestaurant.length <= 0) {
-      console.log("Map didn't receive the active restaurant info yet");
-    } else {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
-      /// Getting reviews for active restaurant
-      let requestPlaceDetails = {
-        placeId: this.props.activeRestaurant.place_id
-      };
+  detailsRequest() {
+    /// Getting reviews for active restaurant
+    let requestPlaceDetails = {
+      placeId: this.props.activeRestaurant.place_id
+    };
 
-      this.service().getDetails(requestPlaceDetails, function(place, status) {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          console.log(place.reviews);
-        }
-      });
+    let handleDetailsResults = (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        this.setState({
+          loadReviewsForActiveItem: results
+        });
+        this.sendReviews();
+      }
+      console.log(
+        "Loading reviews for: " + this.state.loadReviewsForActiveItem.name
+      );
+    };
+
+    this.service().getDetails(requestPlaceDetails, handleDetailsResults);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+      this.detailsRequest();
     }
   }
 
   renderMarkers() {
+    let markerColor;
     //user's location marker
     new window.google.maps.Marker({
       position: this.state.usersPosition,
@@ -147,12 +162,19 @@ class TestMap extends Component {
     });
 
     this.state.getVisibleRestaurants.forEach(restaurant => {
+      if (restaurant.place_id === this.props.activeRestaurant.place_id) {
+        markerColor = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+      } else {
+        markerColor = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+      }
+
       //add restaurant marker
       let restaurantMarker = new window.google.maps.Marker({
+        place_id: restaurant.place_id,
         position: restaurant.geometry.location,
         map: this.state.map,
         title: restaurant.name,
-        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        icon: markerColor
       });
       // update state with marker of new restaurant
       this.setState(prevState => ({

@@ -15,7 +15,6 @@ class RestaurantItem extends Component {
       this.setState({
         isActive: true
       });
-      console.log(this.props.restaurant.name + " is active!");
     };
   }
   streetViewUrl = () => {
@@ -35,10 +34,7 @@ class RestaurantItem extends Component {
       <div className="restaurantCard" onClick={this.requestReviewsForItem}>
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
-          <p className="restaurantRating">
-            {this.props.restaurant.rating}/5 out of{" "}
-            {this.props.restaurant.user_ratings_total} reviews
-          </p>
+          <p className="restaurantRating">{this.props.restaurant.rating}/5</p>
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
             <button
