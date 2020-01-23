@@ -113,18 +113,6 @@ class TestMap extends Component {
 
       console.log("clicked! " + newMapClick);
     });
-
-    //   /// TEST - getting reviews for each found restaurant
-    //   let requestPlaceDetails = {
-    //     placeId: place.place_id
-    //   };
-
-    //   service.getDetails(requestPlaceDetails, function(place, status) {
-    //     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-    //       console.log(place.reviews);
-    //     }
-    //   });
-    //   /////////////////// test finish
   };
 
   setMapOnMarkers(mapName) {
@@ -133,10 +121,20 @@ class TestMap extends Component {
     }
   }
   componentDidUpdate() {
-    if (this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+    if (this.props.activeRestaurant.length <= 0) {
+      console.log("Map didn't receive the active restaurant info yet");
     } else {
-      console.log("Map didn't receive the active restaurant info");
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+      /// Getting reviews for active restaurant
+      let requestPlaceDetails = {
+        placeId: this.props.activeRestaurant.place_id
+      };
+
+      this.service().getDetails(requestPlaceDetails, function(place, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          console.log(place.reviews);
+        }
+      });
     }
   }
 
@@ -154,7 +152,7 @@ class TestMap extends Component {
         position: restaurant.geometry.location,
         map: this.state.map,
         title: restaurant.name,
-        icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
       });
       // update state with marker of new restaurant
       this.setState(prevState => ({
