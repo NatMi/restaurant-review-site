@@ -12,6 +12,9 @@ class TestMap extends Component {
       getVisibleRestaurants: [],
       restaurantMarkerList: []
     };
+    this.sendData = () => {
+      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
+    };
     this.drawGoogleMap = () => {
       this.state.map = new window.google.maps.Map(
         document.getElementById(this.props.id),
@@ -27,34 +30,14 @@ class TestMap extends Component {
           ]
         }
       );
-    };
-
-    //sets sendRestaurantData property to contain restaurant data from current state
-    this.sendData = () => {
-      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
+      this.service = () => {
+        return new window.google.maps.places.PlacesService(this.state.map);
+      };
     };
   }
 
-  componentDidMount = () => {
-    this.drawGoogleMap();
-
-    let service = new window.google.maps.places.PlacesService(this.state.map);
-    // updating  map state property with user's position once geolocation query is succesfully resolved
-
-    let getNearbyRestaurants = (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        results.forEach(place => {
-          //update state with visible restaurants
-          this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-          }));
-          this.renderMarkers();
-        });
-      }
-      // send updated restaurant data to App component
-      this.sendData();
-    };
-
+  geolocationApi() {
+    // use position details from callback
     let onPositionReceived = position => {
       this.setState({
         usersPosition: {
@@ -62,51 +45,52 @@ class TestMap extends Component {
           lng: position.coords.longitude
         }
       });
-
       //centre map component on user's position and update map bounds:
       this.state.map.setCenter(this.state.usersPosition);
-      this.setState({
-        mapBounds: this.state.map.getBounds
-      });
-
-      // GOOGLE PLACES API
-      let searchBounds = {
-        bounds: this.state.mapBounds,
-        type: ["restaurant"]
-      };
-
-      service.nearbySearch(searchBounds, getNearbyRestaurants);
-      this.renderMarkers();
-
-      //   /// TEST - getting reviews for each found restaurant
-      //   let requestPlaceDetails = {
-      //     placeId: place.place_id
-      //   };
-
-      //   service.getDetails(requestPlaceDetails, function(place, status) {
-      //     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-      //       console.log(place.reviews);
-      //     }
-      //   });
-      //   /////////////////// test finish
-
-      // getting coordinates on click. TODO: show info window
-      this.state.map.addListener("click", function(event) {
-        let newMapClick = new window.google.maps.Point(
-          event.latLng.lat(),
-          event.latLng.lng()
-        );
-
-        console.log("clicked! " + newMapClick);
-      });
     };
 
     // TEST FOR GEOLOCATION
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(onPositionReceived);
     } else {
-      console.log("geolocation unavailable");
+      return <p>Geolocation unavailable.</p>;
     }
+  }
+
+  nearbySearchRequest() {}
+
+  componentDidMount = () => {
+    this.geolocationApi();
+    this.drawGoogleMap();
+
+    // GOOGLE PLACES API
+    let searchBounds = {
+      bounds: this.state.mapBounds,
+      type: ["restaurant"]
+    };
+
+    let handleSearchresults = (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        results.forEach(place => {
+          //update state with each restaurant found
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+        });
+      }
+
+      // check if any restaurant from json file is contained within current google map bounds, if yes, add to state and create marker
+      restaurantList.forEach(place => {
+        if (this.state.map.getBounds().contains(place.geometry.location))
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+      });
+      this.sendData();
+      this.renderMarkers();
+    };
+
+    this.service().nearbySearch(searchBounds, handleSearchresults);
 
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
@@ -117,20 +101,30 @@ class TestMap extends Component {
         bounds: this.state.map.getBounds(),
         type: ["restaurant"]
       };
-      service.nearbySearch(searchBounds, getNearbyRestaurants);
-
-      // create markers from json file list of restaurants
-      restaurantList.forEach(place => {
-        let check = this.state.map
-          .getBounds()
-          .contains(place.geometry.location);
-        if (check)
-          this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-          }));
-        this.renderMarkers();
-      });
+      this.service().nearbySearch(searchBounds, handleSearchresults);
     });
+
+    // getting coordinates on click. TODO: show info window
+    this.state.map.addListener("click", function(event) {
+      let newMapClick = new window.google.maps.Point(
+        event.latLng.lat(),
+        event.latLng.lng()
+      );
+
+      console.log("clicked! " + newMapClick);
+    });
+
+    //   /// TEST - getting reviews for each found restaurant
+    //   let requestPlaceDetails = {
+    //     placeId: place.place_id
+    //   };
+
+    //   service.getDetails(requestPlaceDetails, function(place, status) {
+    //     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+    //       console.log(place.reviews);
+    //     }
+    //   });
+    //   /////////////////// test finish
   };
 
   setMapOnMarkers(mapName) {
