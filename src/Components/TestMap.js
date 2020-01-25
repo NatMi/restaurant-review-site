@@ -226,7 +226,6 @@ class TestMap extends Component {
       }));
 
       // MAP EVENT: Restaurant marker click
-
       this.state.restaurantMarkerList.forEach(marker => {
         marker.addListener(
           "click",
@@ -238,18 +237,6 @@ class TestMap extends Component {
               this.requestForActiveStatusFromMarker(marker.place_id);
 
               marker.icon = console.log(" marker clicked! " + marker.title);
-              window.google.maps.event.clearInstanceListeners(marker);
-              // let activeMarker = this.state.restaurantMarkerList.indexOf(
-              //   marker
-              // );
-              // console.log(activeMarker);
-              // this.setState(prevState => ({
-              //   restaurantMarkerList: {
-              //     ...prevState.restaurantMarkerList,
-              //     [prevState.restaurantMarkerList[activeMarker].icon]:
-              //       "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-              //   }
-              // }));
             } else {
               this.setState({
                 activeRestaurant: {}
