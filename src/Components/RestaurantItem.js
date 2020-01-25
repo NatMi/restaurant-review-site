@@ -17,13 +17,13 @@ class RestaurantItem extends Component {
       });
     };
   }
-  // componentDidUpdate() {
-  //   if (prevProps.itemReviews !== this.props.itemReviews) {
-  //     this.setState({
-  //       currentRestaurantList: this.props.getVisibleRestaurants
-  //     });
-  //   }
-  // }
+  checkRating(restaurant) {
+    if (restaurant.rating <= 0 || restaurant.rating === undefined) {
+      return "No reviews found yet.";
+    } else {
+      return `${restaurant.rating} / 5`;
+    }
+  }
 
   streetViewUrl = () => {
     return (
@@ -42,7 +42,9 @@ class RestaurantItem extends Component {
       <div className="restaurantCard" onClick={this.requestReviewsForItem}>
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
-          <p className="restaurantRating">{this.props.restaurant.rating}/5</p>
+          <p className="restaurantRating">
+            {this.checkRating(this.props.restaurant)}
+          </p>
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
             <button
