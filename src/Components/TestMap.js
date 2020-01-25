@@ -9,6 +9,7 @@ class TestMap extends Component {
       usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default, updated once user shares their location
       mapCenter: [],
       mapBounds: [],
+      activeRestaurant: {},
       getVisibleRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
@@ -38,6 +39,19 @@ class TestMap extends Component {
         return new window.google.maps.places.PlacesService(this.state.map);
       };
     };
+
+    this.requestForActiveStatusFromMarker = this.requestForActiveStatusFromMarker.bind(
+      this
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+      this.setState({ activeRestaurant: this.props.activeRestaurant });
+
+      this.detailsRequest();
+    }
   }
 
   geolocationApi() {
@@ -91,7 +105,29 @@ class TestMap extends Component {
           }));
       });
       this.sendData();
+
       this.renderMarkers();
+
+      // this.state.getVisibleRestaurants.forEach(place => {
+      //   let isActive = () => {
+      //     if (this.props.activeRestaurant.place_id === place.place_id) {
+      //       return true;
+      //     } else {
+      //       return false;
+      //     }
+      //   };
+
+      //   return (
+      //     <Marker
+      //       title={place.name}
+      //       type="restaurant"
+      //       position={place.geometry.location}
+      //       map={this.state.map}
+      //       key={place.place_id}
+      //       isActive={isActive}
+      //     />
+      //   );
+      // });
     };
 
     this.service().nearbySearch(searchBounds, handleSearchresults);
@@ -108,7 +144,7 @@ class TestMap extends Component {
       this.service().nearbySearch(searchBounds, handleSearchresults);
     });
 
-    // getting coordinates on click. TODO: show info window
+    // MAP EVENT: Getting coordinates on click.
     this.state.map.addListener("click", function(event) {
       let newMapClick = new window.google.maps.Point(
         event.latLng.lat(),
@@ -141,12 +177,15 @@ class TestMap extends Component {
 
     this.service().getDetails(requestPlaceDetails, handleDetailsResults);
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
-      this.detailsRequest();
-    }
+  requestForActiveStatusFromMarker(requestedPlaceId) {
+    this.state.getVisibleRestaurants.forEach(restaurant => {
+      if (restaurant.place_id === requestedPlaceId) {
+        this.setState({
+          activeRestaurant: restaurant
+        });
+        this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
+      }
+    });
   }
 
   renderMarkers() {
@@ -180,15 +219,17 @@ class TestMap extends Component {
           restaurantMarker
         ]
       }));
-      this.state.restaurantMarkerList.forEach(marker => {
-        marker.addListener("click", function(event) {
-          let newMapClick = new window.google.maps.Point(
-            event.latLng.lat(),
-            event.latLng.lng()
-          );
 
-          console.log(" marker clicked! " + newMapClick);
-        });
+      // MAP EVENT: Restaurant marker click
+      this.state.restaurantMarkerList.forEach(marker => {
+        marker.addListener(
+          "click",
+          function() {
+            this.requestForActiveStatusFromMarker(marker.place_id);
+
+            console.log(" marker clicked! " + marker.title);
+          }.bind(this)
+        );
       });
     });
   }

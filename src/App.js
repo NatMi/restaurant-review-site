@@ -26,7 +26,7 @@ class App extends Component {
         "App reviews loaded: " + this.state.activeRestaurantReviews.name
       );
     };
-    this.receiveActiveStatusRequestFromSidebar = restaurant => {
+    this.receiveActiveStatusRequest = restaurant => {
       this.setState({ activeRestaurant: restaurant });
     };
   }
@@ -73,15 +73,14 @@ class App extends Component {
                 id="googleMap"
                 sendRestaurantData={this.getRestaurantData}
                 sendReviewsForActiveItem={this.getReviewsForActiveItem}
+                requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 activeRestaurant={this.state.activeRestaurant}
               />
             </section>
             <section id="restaurantListArea">
               <RestaurantSidebar
                 getVisibleRestaurants={this.state.visibleRestaurants}
-                requestForActiveStatusToApp={
-                  this.receiveActiveStatusRequestFromSidebar
-                }
+                requestForActiveStatusToApp={this.receiveActiveStatusRequest}
               />
             </section>
           </div>
