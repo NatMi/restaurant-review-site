@@ -12,6 +12,7 @@ class TestMap extends Component {
       activeRestaurant: {
         name: "Map: no active restaurant"
       },
+      activeMarker: null,
       getVisibleRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
@@ -74,7 +75,11 @@ class TestMap extends Component {
       this.setState({ activeRestaurant: this.props.activeRestaurant });
 
       this.detailsRequest();
-    } else {
+    }
+    if (prevState.activeMarker != this.state.activeMarker) {
+      this.state.activeMarker.setIcon(
+        "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+      );
     }
   }
 
@@ -230,7 +235,15 @@ class TestMap extends Component {
         marker.addListener(
           "click",
           function() {
+            if (this.state.activeMarker !== null) {
+              this.state.activeMarker.setIcon(
+                "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+              );
+            }
             if (marker.place_id !== this.state.activeRestaurant.place_id) {
+              this.setState({
+                activeMarker: marker
+              });
               marker.setIcon(
                 "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
               );
