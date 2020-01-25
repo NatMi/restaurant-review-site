@@ -9,7 +9,9 @@ class TestMap extends Component {
       usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default, updated once user shares their location
       mapCenter: [],
       mapBounds: [],
-      activeRestaurant: {},
+      activeRestaurant: {
+        name: "Map: no active restaurant"
+      },
       getVisibleRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
@@ -45,15 +47,6 @@ class TestMap extends Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
-      this.setState({ activeRestaurant: this.props.activeRestaurant });
-
-      this.detailsRequest();
-    }
-  }
-
   geolocationApi() {
     // use position details from callback
     let onPositionReceived = position => {
@@ -75,7 +68,15 @@ class TestMap extends Component {
     }
   }
 
-  nearbySearchRequest() {}
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+      this.setState({ activeRestaurant: this.props.activeRestaurant });
+
+      this.detailsRequest();
+    } else {
+    }
+  }
 
   componentDidMount = () => {
     this.geolocationApi();
@@ -88,6 +89,9 @@ class TestMap extends Component {
     };
 
     let handleSearchresults = (results, status) => {
+      this.setState({
+        getVisibleRestaurants: []
+      });
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         results.forEach(place => {
           //update state with each restaurant found
@@ -135,6 +139,7 @@ class TestMap extends Component {
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
       this.setMapOnMarkers(null);
+
       this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
 
       let searchBounds = {
@@ -189,28 +194,28 @@ class TestMap extends Component {
   }
 
   renderMarkers() {
-    let markerColor;
     //user's location marker
     new window.google.maps.Marker({
       position: this.state.usersPosition,
       map: this.state.map,
       title: "Your current location"
     });
+    //add restaurant markers
+    let markerColor = restaurant => {
+      if (restaurant.place_id === this.props.activeRestaurant.place_id) {
+        return "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+      } else {
+        return "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+      }
+    };
 
     this.state.getVisibleRestaurants.forEach(restaurant => {
-      if (restaurant.place_id === this.props.activeRestaurant.place_id) {
-        markerColor = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
-      } else {
-        markerColor = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
-      }
-
-      //add restaurant marker
       let restaurantMarker = new window.google.maps.Marker({
         place_id: restaurant.place_id,
         position: restaurant.geometry.location,
         map: this.state.map,
         title: restaurant.name,
-        icon: markerColor
+        icon: markerColor(restaurant)
       });
       // update state with marker of new restaurant
       this.setState(prevState => ({
@@ -221,13 +226,35 @@ class TestMap extends Component {
       }));
 
       // MAP EVENT: Restaurant marker click
+
       this.state.restaurantMarkerList.forEach(marker => {
         marker.addListener(
           "click",
           function() {
-            this.requestForActiveStatusFromMarker(marker.place_id);
+            if (marker.place_id !== this.state.activeRestaurant.place_id) {
+              marker.setIcon(
+                "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              );
+              this.requestForActiveStatusFromMarker(marker.place_id);
 
-            console.log(" marker clicked! " + marker.title);
+              marker.icon = console.log(" marker clicked! " + marker.title);
+              window.google.maps.event.clearInstanceListeners(marker);
+              // let activeMarker = this.state.restaurantMarkerList.indexOf(
+              //   marker
+              // );
+              // console.log(activeMarker);
+              // this.setState(prevState => ({
+              //   restaurantMarkerList: {
+              //     ...prevState.restaurantMarkerList,
+              //     [prevState.restaurantMarkerList[activeMarker].icon]:
+              //       "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              //   }
+              // }));
+            } else {
+              this.setState({
+                activeRestaurant: {}
+              });
+            }
           }.bind(this)
         );
       });

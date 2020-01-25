@@ -15,12 +15,12 @@
       {
         "author_name": "Avocado Tree",
         "stars": 4,
-        "comment": "Love the coffee, food not so much."
+        "text": "Love the coffee, food not so much."
       },
       {
         "author_name": "Daniel Wallace",
         "stars": 5,
-        "comment": "I'm a regular, that should explain my rating."
+        "text": "I'm a regular, that should explain my rating."
       }
     ]
   },
@@ -41,12 +41,12 @@
       {
         "author_name": "Walter Mischel",
         "stars": 5,
-        "comment": "Great spot to meet with your friends, tasty food and lovely coffee."
+        "text": "Great spot to meet with your friends, tasty food and lovely coffee."
       },
       {
         "author_name": "Joanne Harris",
         "stars": 3,
-        "comment": "My sandwich was too cold. I'll come back to try toasties though."
+        "text": "My sandwich was too cold. I'll come back to try toasties though."
       }
     ]
   },
@@ -66,12 +66,12 @@
       {
         "author_name": "John Doe",
         "stars": 5,
-        "comment": "Best French restaurant in the city!"
+        "text": "Best French restaurant in the city!"
       },
       {
         "author_name": "Anne Freud",
         "stars": 4,
-        "comment": "Would dine here more often if it wasn't for the prices."
+        "text": "Would dine here more often if it wasn't for the prices."
       }
     ]
   }

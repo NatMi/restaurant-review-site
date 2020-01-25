@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "../Styles/restaurantSidebar.css";
-import ItemReviews from "./ItemReviews.js";
+import ItemReview from "./ItemReviews.js";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
 class RestaurantItem extends Component {
@@ -8,7 +8,7 @@ class RestaurantItem extends Component {
     super(props);
     this.state = {
       isActive: false,
-      reviews: []
+      itemReviews: []
     };
     this.requestReviewsForItem = () => {
       this.props.requestForActiveStatusToSidebar(this.props.restaurant);
@@ -17,6 +17,14 @@ class RestaurantItem extends Component {
       });
     };
   }
+  // componentDidUpdate() {
+  //   if (prevProps.itemReviews !== this.props.itemReviews) {
+  //     this.setState({
+  //       currentRestaurantList: this.props.getVisibleRestaurants
+  //     });
+  //   }
+  // }
+
   streetViewUrl = () => {
     return (
       "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" +

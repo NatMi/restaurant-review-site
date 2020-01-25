@@ -81,6 +81,8 @@ class App extends Component {
               <RestaurantSidebar
                 getVisibleRestaurants={this.state.visibleRestaurants}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
+                receiveActiveStatusFromApp={this.state.activeRestaurant}
+                loadReviewsFromApp={this.state.activeRestaurantReviews.reviews}
               />
             </section>
           </div>

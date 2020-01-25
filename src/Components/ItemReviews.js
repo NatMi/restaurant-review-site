@@ -1,22 +1,24 @@
 import React, { Component } from "react";
 import "../Styles/ItemReview.css";
 
-class ItemReviews extends Component {
+class ItemReview extends Component {
   render() {
-    /*{this.props.reviewItem.author_name}*/
-    // console.log(this.props.reviewItem);
     return (
-      <div className="restaurantReviewCard">
-        <div className="authorName"> Blah </div>
-        <div className="reviewHeader">
-          <div className="restaurantRating">5 stars</div>
-        </div>
-        <div className="reviewBody">
-          <p className="reviewText"> Amazing dining experience!</p>
-        </div>
+      <div>
+        {this.props.loadReviews.map(review => (
+          <div className="restaurantReviewCard">
+            <div className="authorName"> {review.author_name} </div>
+            <div className="reviewHeader">
+              <div className="restaurantRating">{review.rating}</div>
+            </div>
+            <div className="reviewBody">
+              <p className="reviewText"> {review.text}</p>
+            </div>{" "}
+          </div>
+        ))}
       </div>
     );
   }
 }
 
-export default ItemReviews;
+export default ItemReview;
