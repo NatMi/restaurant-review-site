@@ -46,32 +46,55 @@ class RestaurantSidebar extends Component {
     console.log("sidebar active reviews: " + this.props.loadReviewsFromApp);
   }
 
-  render() {
-    if (this.props.loadReviewsFromApp !== undefined) {
-      return (
-        <div>
+  handleBackToResults = () => {
+    this.setState({
+      activeRestaurant: false
+    });
+  };
+
+  renderActive() {
+    return (
+      <div>
+        <button className="btnBackToResults" onClick={this.handleBackToResults}>
+          Back to results
+        </button>
+        <RestaurantItem
+          restaurant={this.state.activeRestaurant}
+          key={this.state.activeRestaurant.place_id}
+          requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+          isActive={true}
+        />
+        <ItemReview
+          key={this.state.activeRestaurant.name}
+          loadReviews={this.props.loadReviewsFromApp}
+        />
+      </div>
+    );
+  }
+
+  renderResults() {
+    return (
+      <div id="restaurantList">
+        <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
+        {this.props.getVisibleRestaurants.map(restaurant => (
           <RestaurantItem
-            restaurant={this.state.activeRestaurant}
-            key={this.state.activeRestaurant.place_id}
+            restaurant={restaurant}
+            key={restaurant.place_id}
             requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-            isActive={true}
           />
-          <ItemReview loadReviews={this.props.loadReviewsFromApp} />
-        </div>
-      );
+        ))}
+      </div>
+    );
+  }
+
+  render() {
+    if (
+      this.state.activeRestaurant !== false &&
+      this.props.loadReviewsFromApp !== undefined
+    ) {
+      return this.renderActive();
     } else if (this.props.getVisibleRestaurants.length > 0) {
-      return (
-        <div id="restaurantList">
-          <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
-          {this.props.getVisibleRestaurants.map(restaurant => (
-            <RestaurantItem
-              restaurant={restaurant}
-              key={restaurant.place_id}
-              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-            />
-          ))}
-        </div>
-      );
+      return this.renderResults();
     } else {
       return (
         <div id="restaurantList">
