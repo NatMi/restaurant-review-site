@@ -17,6 +17,20 @@ class RestaurantItem extends Component {
       });
     };
   }
+  setLng(restaurant) {
+    if (typeof restaurant.geometry.location.lng === "function") {
+      return restaurant.geometry.location.lng();
+    } else {
+      return restaurant.geometry.location.lng;
+    }
+  }
+  setLat(restaurant) {
+    if (typeof restaurant.geometry.location.lat === "function") {
+      return restaurant.geometry.location.lat();
+    } else {
+      return restaurant.geometry.location.lat;
+    }
+  }
   checkRating(restaurant) {
     if (restaurant.rating <= 0 || restaurant.rating === undefined) {
       return "No reviews found yet.";
@@ -28,9 +42,9 @@ class RestaurantItem extends Component {
   streetViewUrl = () => {
     return (
       "https://maps.googleapis.com/maps/api/streetview?size=400x400&location=" +
-      this.props.restaurant.geometry.location.lat +
+      this.setLat(this.props.restaurant) +
       "," +
-      this.props.restaurant.geometry.location.lng +
+      this.setLng(this.props.restaurant) +
       "&fov=80&heading=70&pitch=0&key=" +
       googleMapsKey.apiKey
     );
