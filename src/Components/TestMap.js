@@ -73,7 +73,10 @@ class TestMap extends Component {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
       console.log("Map active restaurant: " + this.props.activeRestaurant);
 
-      if (this.props.activeRestaurant === false) {
+      if (
+        this.props.activeRestaurant === false &&
+        this.state.activeMarker !== false
+      ) {
         this.state.activeMarker.setIcon(
           "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
         );
