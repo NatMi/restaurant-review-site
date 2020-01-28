@@ -14,12 +14,12 @@
     "reviews": [
       {
         "author_name": "Avocado Tree",
-        "stars": 4,
+        "rating": 4,
         "text": "Love the coffee, food not so much."
       },
       {
         "author_name": "Daniel Wallace",
-        "stars": 5,
+        "rating": 5,
         "text": "I'm a regular, that should explain my rating."
       }
     ]
@@ -35,17 +35,22 @@
         "lng": -3.2164468246839584
       }
     },
-    "rating": 4,
-    "user_ratings_total": 2,
+    "rating": 4.33,
+    "user_ratings_total": 3,
     "reviews": [
       {
         "author_name": "Walter Mischel",
-        "stars": 5,
+        "rating": 5,
         "text": "Great spot to meet with your friends, tasty food and lovely coffee."
       },
       {
+        "author_name": "Content Artist",
+        "rating": 5,
+        "text": "I'm just here to provide more content."
+      },
+      {
         "author_name": "Joanne Harris",
-        "stars": 3,
+        "rating": 3,
         "text": "My sandwich was too cold. I'll come back to try toasties though."
       }
     ]
@@ -65,12 +70,12 @@
     "reviews": [
       {
         "author_name": "John Doe",
-        "stars": 5,
+        "rating": 5,
         "text": "Best French restaurant in the city!"
       },
       {
         "author_name": "Anne Freud",
-        "stars": 4,
+        "rating": 4,
         "text": "Would dine here more often if it wasn't for the prices."
       }
     ]

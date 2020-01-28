@@ -93,7 +93,9 @@ class TestMap extends Component {
         }
       });
       // get details for new active restaurant
-      this.detailsRequest();
+      if (this.props.activeRestaurant !== false) {
+        this.detailsRequest();
+      }
     }
 
     if (
@@ -105,7 +107,6 @@ class TestMap extends Component {
       );
     }
   }
-  ///end of comp did update
 
   componentDidMount = () => {
     this.geolocationApi();
@@ -140,27 +141,6 @@ class TestMap extends Component {
       this.sendData();
 
       this.renderMarkers();
-
-      // this.state.getVisibleRestaurants.forEach(place => {
-      //   let isActive = () => {
-      //     if (this.props.activeRestaurant.place_id === place.place_id) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   };
-
-      //   return (
-      //     <Marker
-      //       title={place.name}
-      //       type="restaurant"
-      //       position={place.geometry.location}
-      //       map={this.state.map}
-      //       key={place.place_id}
-      //       isActive={isActive}
-      //     />
-      //   );
-      // });
     };
 
     this.service().nearbySearch(searchBounds, handleSearchresults);
@@ -195,7 +175,28 @@ class TestMap extends Component {
     }
   }
   detailsRequest() {
-    /// Getting reviews for active restaurant
+    let handleJsonList = () => {
+      // if place_id was not recognised, check json:
+      let filterJsonList = () => {
+        let results = restaurantList.filter(
+          restaurant =>
+            restaurant.place_id === this.props.activeRestaurant.place_id
+        );
+        return results[0];
+        //reurns array with objects
+      };
+
+      this.setState(
+        {
+          loadReviewsForActiveItem: filterJsonList()
+        },
+        () => {
+          this.sendReviews();
+        }
+      );
+    };
+
+    /// Getting Places reviews for active restaurant
     let requestPlaceDetails = {
       placeId: this.props.activeRestaurant.place_id
     };
@@ -210,11 +211,14 @@ class TestMap extends Component {
             this.sendReviews();
           }
         );
+      } else {
+        handleJsonList();
       }
     };
 
     this.service().getDetails(requestPlaceDetails, handleDetailsResults);
   }
+
   requestForActiveStatusFromMarker(requestedPlaceId) {
     this.state.getVisibleRestaurants.forEach(restaurant => {
       if (restaurant.place_id === requestedPlaceId) {
