@@ -12,7 +12,7 @@ class TestMap extends Component {
       activeRestaurant: {
         name: "Map: no active restaurant"
       },
-      activeMarker: null,
+      activeMarker: false,
       getVisibleRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
@@ -71,11 +71,17 @@ class TestMap extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
-      this.setState({ activeRestaurant: this.props.activeRestaurant });
+      console.log("Map active restaurant: " + this.props.activeRestaurant);
 
+      if (this.props.activeRestaurant === false) {
+        this.state.activeMarker.setIcon(
+          "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        );
+      }
+      this.setState({ activeRestaurant: this.props.activeRestaurant });
       this.detailsRequest();
     }
+
     if (prevState.activeMarker != this.state.activeMarker) {
       this.state.activeMarker.setIcon(
         "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
@@ -178,10 +184,14 @@ class TestMap extends Component {
 
     let handleDetailsResults = (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        this.setState({
-          loadReviewsForActiveItem: results
-        });
-        this.sendReviews();
+        this.setState(
+          {
+            loadReviewsForActiveItem: results
+          },
+          () => {
+            this.sendReviews();
+          }
+        );
       }
     };
 
@@ -235,7 +245,10 @@ class TestMap extends Component {
         marker.addListener(
           "click",
           function() {
-            if (this.state.activeMarker !== null) {
+            if (
+              this.state.activeMarker !== false &&
+              this.state.activeRestaurant.place_id !== marker.place_id
+            ) {
               this.state.activeMarker.setIcon(
                 "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
               );
@@ -249,7 +262,7 @@ class TestMap extends Component {
               );
               this.requestForActiveStatusFromMarker(marker.place_id);
 
-              marker.icon = console.log(" marker clicked! " + marker.title);
+              console.log(" marker clicked! " + marker.title);
             } else {
               this.setState({
                 activeRestaurant: {}

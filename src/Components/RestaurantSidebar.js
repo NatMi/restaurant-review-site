@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RestaurantItem from "./RestaurantItem.js";
 import ItemReview from "./ItemReviews.js";
+import Filter from "./Filter.js";
 import "../Styles/restaurantSidebar.css";
 
 class RestaurantSidebar extends Component {
@@ -8,6 +9,7 @@ class RestaurantSidebar extends Component {
     super(props);
     this.state = {
       currentRestaurantList: [],
+      filteredRestaurantList: [],
       activeRestaurant: false
     };
     this.loadReviewsFromApp = false;
@@ -74,20 +76,29 @@ class RestaurantSidebar extends Component {
 
   renderResults() {
     return (
-      <div id="restaurantList">
+      <div>
         <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
-        {this.props.getVisibleRestaurants.map(restaurant => (
-          <RestaurantItem
-            restaurant={restaurant}
-            key={restaurant.place_id}
-            requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-          />
-        ))}
+        <Filter />
+        <div id="restaurantList">
+          {this.props.getVisibleRestaurants.map(restaurant => (
+            <RestaurantItem
+              restaurant={restaurant}
+              key={restaurant.place_id}
+              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+            />
+          ))}
+        </div>
       </div>
     );
   }
 
   render() {
+    if (
+      this.state.activeRestaurant !== false &&
+      this.props.loadReviewsFromApp !== undefined
+    ) {
+      return this.renderActive();
+    }
     if (
       this.state.activeRestaurant !== false &&
       this.props.loadReviewsFromApp !== undefined
