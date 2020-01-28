@@ -71,8 +71,8 @@ class TestMap extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant);
-
+      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
+      // check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
@@ -80,17 +80,32 @@ class TestMap extends Component {
         this.state.activeMarker.setIcon(
           "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
         );
+        this.setState({ activeMarker: false });
       }
+
+      // set new state
       this.setState({ activeRestaurant: this.props.activeRestaurant });
+      this.state.restaurantMarkerList.forEach(marker => {
+        if (marker.place_id === this.props.activeRestaurant.place_id) {
+          this.setState({
+            activeMarker: marker
+          });
+        }
+      });
+      // get details for new active restaurant
       this.detailsRequest();
     }
 
-    if (prevState.activeMarker != this.state.activeMarker) {
+    if (
+      prevState.activeMarker != this.state.activeMarker &&
+      this.state.activeMarker !== false
+    ) {
       this.state.activeMarker.setIcon(
         "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
       );
     }
   }
+  ///end of comp did update
 
   componentDidMount = () => {
     this.geolocationApi();
