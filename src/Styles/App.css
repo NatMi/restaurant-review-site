@@ -31,7 +31,6 @@ h1 {
 #restaurantListArea {
   width: 35vw;
   height: 80vh;
-  overflow-y: auto;
 }
 
 #main-footer {
