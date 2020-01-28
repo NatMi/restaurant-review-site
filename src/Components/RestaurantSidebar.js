@@ -53,7 +53,21 @@ class RestaurantSidebar extends Component {
       activeRestaurant: false
     });
   };
-
+  renderActiveNoReviews() {
+    return (
+      <div>
+        <button className="btnBackToResults" onClick={this.handleBackToResults}>
+          Back to results
+        </button>
+        <RestaurantItem
+          restaurant={this.state.activeRestaurant}
+          key={this.state.activeRestaurant.place_id}
+          requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+          isActive={true}
+        />
+      </div>
+    );
+  }
   renderActive() {
     return (
       <div>
@@ -98,12 +112,11 @@ class RestaurantSidebar extends Component {
       this.props.loadReviewsFromApp !== undefined
     ) {
       return this.renderActive();
-    }
-    if (
+    } else if (
       this.state.activeRestaurant !== false &&
-      this.props.loadReviewsFromApp !== undefined
+      this.props.loadReviewsFromApp === undefined
     ) {
-      return this.renderActive();
+      return this.renderActiveNoReviews();
     } else if (this.props.getVisibleRestaurants.length > 0) {
       return this.renderResults();
     } else {
