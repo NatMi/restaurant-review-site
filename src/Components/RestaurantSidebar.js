@@ -40,9 +40,6 @@ class RestaurantSidebar extends Component {
       this.setState({
         activeRestaurant: this.props.receiveActiveStatusFromApp
       });
-      console.log(
-        "sidebar active restaurant: " + this.state.activeRestaurant.name
-      );
     }
 
     console.log("sidebar active reviews: " + this.props.loadReviewsFromApp);
@@ -80,10 +77,12 @@ class RestaurantSidebar extends Component {
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
           isActive={true}
         />
-        <ItemReview
-          key={this.state.activeRestaurant.name}
-          loadReviews={this.props.loadReviewsFromApp}
-        />
+        <div id="restaurantList">
+          <ItemReview
+            key={this.state.activeRestaurant.name}
+            loadReviews={this.props.loadReviewsFromApp}
+          />
+        </div>
       </div>
     );
   }
