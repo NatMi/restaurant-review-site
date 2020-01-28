@@ -1,8 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=Lato&display=swap");
-* {
+#restaurantList {
+  width: 35vw;
+  height: 70vh;
+  overflow-y: auto;
 }
 h3 {
-  margin: 0 0 5vh 5vh;
+  margin: 0 0 3vh 5vh;
   font-family: "Lato", sans-serif;
   text-align: center;
 }
@@ -11,7 +14,7 @@ h3 {
   justify-content: space-around;
   object-fit: cover;
   object-position: 20% 10px;
-  height: 150px;
+  height: 130px;
   background-color: #ffffff;
   font-family: "Lato", sans-serif;
   font-size: 13px;
@@ -32,9 +35,11 @@ h3 {
   margin: 0;
 }
 .restaurantAddress {
+  margin-top: 0.5rem;
 }
-/* .restaurantRating {
-} */
+.restaurantRating {
+  margin-top: 0;
+}
 .restaurantCardStreetView {
   width: 50%;
   overflow: hidden;
@@ -54,6 +59,12 @@ h3 {
 .restaurantBtnContainer {
   display: flex;
   justify-content: center;
+}
+#filterDiv {
+  margin-bottom: 1rem;
+}
+#filterDiv h4 {
+  margin-bottom: 0;
 }
 .btnBackToResults {
   margin-bottom: 1rem;
