@@ -66,7 +66,7 @@ class RestaurantItem extends Component {
               onClick={this.requestReviewsForItem}
             >
               Read reviews
-            </button>{" "}
+            </button>
             <button className="btnAddRestaurantReviews">Add review</button>
           </div>
         </div>
