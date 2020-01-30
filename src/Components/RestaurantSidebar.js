@@ -9,12 +9,17 @@ class RestaurantSidebar extends Component {
     super(props);
     this.state = {
       currentRestaurantList: [],
-      filteredRestaurantList: [],
+      filteredRestaurantList: false,
       activeRestaurant: false
     };
     this.loadReviewsFromApp = false;
     this.receiveActiveStatusRequest = restaurant => {
       this.setState({ activeRestaurant: restaurant });
+    };
+    this.getFilteredReviews = filteredData => {
+      this.setState({
+        filteredRestaurantList: filteredData
+      });
     };
   }
 
@@ -50,6 +55,7 @@ class RestaurantSidebar extends Component {
       activeRestaurant: false
     });
   };
+
   renderActiveNoReviews() {
     return (
       <div>
@@ -86,12 +92,37 @@ class RestaurantSidebar extends Component {
       </div>
     );
   }
-
+  renderFilteredResults() {
+    return (
+      <div>
+        <h3>
+          Restaurants matching criteria:
+          {this.state.filteredRestaurantList.length}
+        </h3>
+        <Filter
+          restaurantsToFilter={this.state.currentRestaurantList}
+          filteredRestaurantList={this.getFilteredReviews}
+        />
+        <div id="restaurantList">
+          {this.state.filteredRestaurantList.map(restaurant => (
+            <RestaurantItem
+              restaurant={restaurant}
+              key={restaurant.place_id}
+              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
   renderResults() {
     return (
       <div>
         <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
-        <Filter />
+        <Filter
+          restaurantsToFilter={this.state.currentRestaurantList}
+          filteredRestaurantList={this.getFilteredReviews}
+        />
         <div id="restaurantList">
           {this.props.getVisibleRestaurants.map(restaurant => (
             <RestaurantItem
@@ -116,8 +147,13 @@ class RestaurantSidebar extends Component {
       this.props.loadReviewsFromApp === undefined
     ) {
       return this.renderActiveNoReviews();
-    } else if (this.props.getVisibleRestaurants.length > 0) {
+    } else if (
+      this.props.getVisibleRestaurants.length > 0 &&
+      this.state.filteredRestaurantList === false
+    ) {
       return this.renderResults();
+    } else if (this.state.filteredRestaurantList !== false) {
+      return this.renderFilteredResults();
     } else {
       return (
         <div id="restaurantList">
