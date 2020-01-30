@@ -6,7 +6,10 @@ class ItemReview extends Component {
     return (
       <div>
         {this.props.loadReviews.map(review => (
-          <div className="restaurantReviewCard" key={review.place_id}>
+          <div
+            className="restaurantReviewCard"
+            key={review.place_id + review.author_name}
+          >
             <div className="authorName"> {review.author_name} </div>
             <div className="reviewHeader">
               <div className="restaurantRating">{review.rating}</div>
