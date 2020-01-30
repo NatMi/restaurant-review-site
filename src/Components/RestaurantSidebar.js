@@ -75,6 +75,7 @@ class RestaurantSidebar extends Component {
         </button>
         <RestaurantItem
           restaurant={this.state.activeRestaurant}
+          isActive={true}
           key={this.state.activeRestaurant.place_id}
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
           isActive={true}
@@ -103,6 +104,7 @@ class RestaurantSidebar extends Component {
           {this.state.filteredRestaurantList.map(restaurant => (
             <RestaurantItem
               restaurant={restaurant}
+              isActive={false}
               key={restaurant.place_id}
               requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
             />
@@ -123,6 +125,7 @@ class RestaurantSidebar extends Component {
           {this.props.getVisibleRestaurants.map(restaurant => (
             <RestaurantItem
               restaurant={restaurant}
+              isActive={false}
               key={restaurant.place_id}
               requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
             />

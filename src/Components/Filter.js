@@ -111,8 +111,8 @@ class Filter extends Component {
         <button
           onClick={this.clearFilter}
           style={{
-            opacity: this.state.filterIsActive > 0 ? 1 : 0.3,
-            pointerEvents: this.state.filterIsActive > 0 ? "auto" : "none"
+            opacity: this.state.filterIsActive === true ? 1 : 0.3,
+            pointerEvents: this.state.filterIsActive === true ? "auto" : "none"
           }}
         >
           Clear filter

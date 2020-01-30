@@ -7,14 +7,17 @@ class RestaurantItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isActive: false,
       itemReviews: []
     };
     this.requestReviewsForItem = () => {
-      this.props.requestForActiveStatusToSidebar(this.props.restaurant);
-      this.setState({
-        isActive: true
-      });
+      this.setState(
+        {
+          isActive: true
+        },
+        () => {
+          this.props.requestForActiveStatusToSidebar(this.props.restaurant);
+        }
+      );
     };
   }
   setLng(restaurant) {
@@ -53,7 +56,7 @@ class RestaurantItem extends Component {
   render() {
     return (
       /*restaurant card: */
-      <div className="restaurantCard" onClick={this.requestReviewsForItem}>
+      <div className="restaurantCard">
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
           <p className="restaurantRating">
@@ -62,6 +65,10 @@ class RestaurantItem extends Component {
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
             <button
+              style={{
+                opacity: this.props.isActive === false ? 1 : 0.3,
+                pointerEvents: this.props.isActive === false ? "auto" : "none"
+              }}
               className="btnRestaurantReviews"
               onClick={this.requestReviewsForItem}
             >
