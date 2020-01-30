@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "../Styles/Filter.css";
 
 class Filter extends Component {
   constructor(props) {
@@ -6,9 +7,24 @@ class Filter extends Component {
     this.state = {
       selectMinimumRating: 1,
       selectMaximumRating: 5,
-      filteredRestaurants: []
+      filteredRestaurants: [],
+      errorMsg: ""
     };
   }
+
+  clearFilter = () => {
+    this.setState(
+      {
+        selectMinimumRating: 1,
+        selectMaximumRating: 5,
+        filteredRestaurants: false,
+        errorMsg: ""
+      },
+      () => {
+        this.props.filteredRestaurantList(this.state.filteredRestaurants);
+      }
+    );
+  };
   filterRestaurants() {
     return this.props.restaurantsToFilter.filter(
       restaurants =>
@@ -19,9 +35,19 @@ class Filter extends Component {
   handleSubmit = event => {
     event.preventDefault();
     let filteredRestaurants = this.filterRestaurants();
-    this.setState({ filteredRestaurants: filteredRestaurants }, () => {
-      this.props.filteredRestaurantList(this.state.filteredRestaurants);
-    });
+    if (this.state.selectMinimumRating <= this.state.selectMaximumRating) {
+      this.setState(
+        { filteredRestaurants: filteredRestaurants, errorMsg: "" },
+        () => {
+          this.props.filteredRestaurantList(this.state.filteredRestaurants);
+        }
+      );
+    } else {
+      this.setState({
+        errorMsg:
+          "Minimum rating value has to be smaller than maximum. Please adjust."
+      });
+    }
   };
   handleChangeMinimumRating = event => {
     this.setState({
@@ -34,29 +60,36 @@ class Filter extends Component {
     });
   };
 
+  renderMinimumSelect = () => {
+    return (
+      <select
+        id="minRating"
+        name="minRatingSelect"
+        value={this.state.selectMinimumRating}
+        onChange={this.handleChangeMinimumRating}
+      >
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    );
+  };
+
   render() {
     return (
       <div id="filterDiv">
         <form onSubmit={this.handleSubmit}>
           <h4>Filter results:</h4>
           <label htmlFor="minRatingSelect">Min: </label>
-          <select
-            id="minRating"
-            name="minRatingSelect"
-            onChange={this.handleChangeMinimumRating}
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
+          {this.renderMinimumSelect()}
 
           <label htmlFor="maxRatingSelect">Max: </label>
           <select
             id="maxRating"
             name="maxRatingSelect"
-            defaultValue="5"
+            value={this.state.selectMaximumRating}
             onChange={this.handleChangeMaximumRating}
           >
             <option value="1">1</option>
@@ -68,6 +101,8 @@ class Filter extends Component {
 
           <input type="submit" value="Apply filter" />
         </form>
+        <p className="filterErrorMsg">{this.state.errorMsg}</p>
+        <button onClick={this.clearFilter}>Clear filter</button>
       </div>
     );
   }

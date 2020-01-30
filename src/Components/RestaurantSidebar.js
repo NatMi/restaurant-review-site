@@ -28,15 +28,13 @@ class RestaurantSidebar extends Component {
     // update check on restaurant list:
     if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
       this.setState({
-        currentRestaurantList: this.props.getVisibleRestaurants
+        currentRestaurantList: this.props.getVisibleRestaurants,
+        filteredRestaurantList: false
       });
     }
     //update check on
     if (prevState.activeRestaurant !== this.state.activeRestaurant) {
       this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
-      console.log(
-        "sidebar active restaurant: " + this.state.activeRestaurant.name
-      );
     }
     if (
       prevProps.receiveActiveStatusFromApp !==
@@ -46,8 +44,6 @@ class RestaurantSidebar extends Component {
         activeRestaurant: this.props.receiveActiveStatusFromApp
       });
     }
-
-    console.log("sidebar active reviews: " + this.props.loadReviewsFromApp);
   }
 
   handleBackToResults = () => {
@@ -96,12 +92,13 @@ class RestaurantSidebar extends Component {
     return (
       <div>
         <h3>
-          Restaurants matching criteria:
+          {"Showing filtered results: "}
           {this.state.filteredRestaurantList.length}
         </h3>
         <Filter
           restaurantsToFilter={this.state.currentRestaurantList}
           filteredRestaurantList={this.getFilteredReviews}
+          filterIsActive={false}
         />
         <div id="restaurantList">
           {this.state.filteredRestaurantList.map(restaurant => (
