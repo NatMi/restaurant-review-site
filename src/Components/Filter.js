@@ -8,6 +8,7 @@ class Filter extends Component {
       selectMinimumRating: 1,
       selectMaximumRating: 5,
       filteredRestaurants: [],
+      filterIsActive: false,
       errorMsg: ""
     };
   }
@@ -18,6 +19,7 @@ class Filter extends Component {
         selectMinimumRating: 1,
         selectMaximumRating: 5,
         filteredRestaurants: false,
+        filterIsActive: false,
         errorMsg: ""
       },
       () => {
@@ -37,7 +39,11 @@ class Filter extends Component {
     let filteredRestaurants = this.filterRestaurants();
     if (this.state.selectMinimumRating <= this.state.selectMaximumRating) {
       this.setState(
-        { filteredRestaurants: filteredRestaurants, errorMsg: "" },
+        {
+          filteredRestaurants: filteredRestaurants,
+          errorMsg: "",
+          filterIsActive: true
+        },
         () => {
           this.props.filteredRestaurantList(this.state.filteredRestaurants);
         }
@@ -102,7 +108,15 @@ class Filter extends Component {
           <input type="submit" value="Apply filter" />
         </form>
         <p className="filterErrorMsg">{this.state.errorMsg}</p>
-        <button onClick={this.clearFilter}>Clear filter</button>
+        <button
+          onClick={this.clearFilter}
+          style={{
+            opacity: this.state.filterIsActive > 0 ? 1 : 0.3,
+            pointerEvents: this.state.filterIsActive > 0 ? "auto" : "none"
+          }}
+        >
+          Clear filter
+        </button>
       </div>
     );
   }

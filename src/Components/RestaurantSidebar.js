@@ -98,7 +98,6 @@ class RestaurantSidebar extends Component {
         <Filter
           restaurantsToFilter={this.state.currentRestaurantList}
           filteredRestaurantList={this.getFilteredReviews}
-          filterIsActive={false}
         />
         <div id="restaurantList">
           {this.state.filteredRestaurantList.map(restaurant => (
