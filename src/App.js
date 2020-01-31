@@ -5,6 +5,7 @@ import Footer from "./Components/Footer.js";
 // import Map from "./Components/Map.js";
 import TestMap from "./Components/TestMap.js";
 import RestaurantSidebar from "./Components/RestaurantSidebar.js";
+import AddRestaurantForm from "./Components/AddRestaurantForm.js";
 import googleMapsKey from "./Data/googleMapsKey.json";
 
 class App extends Component {
@@ -15,10 +16,16 @@ class App extends Component {
       visibleRestaurants: [],
       restaurantMarkerList: [],
       activeRestaurant: [],
-      activeRestaurantReviews: []
+      activeRestaurantReviews: [],
+      isNewRestaurantFormActive: false
     };
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
+    };
+    this.openNewRestaurantForm = mapData => {
+      this.setState({ isNewRestaurantFormActive: mapData }, () => {
+        console.log(mapData);
+      });
     };
     this.getReviewsForActiveItem = reviewsData => {
       this.setState({ activeRestaurantReviews: reviewsData });
@@ -68,13 +75,17 @@ class App extends Component {
           <Header />
           <div className="App-main">
             <section id="mapArea">
-              {/* <Map id="googleMap" sendRestaurantData={this.getRestaurantData} /> */}
               <TestMap
                 id="googleMap"
                 sendRestaurantData={this.getRestaurantData}
                 sendReviewsForActiveItem={this.getReviewsForActiveItem}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
+                showNewRestaurantForm={this.openNewRestaurantForm}
                 activeRestaurant={this.state.activeRestaurant}
+              />
+              <div>Right-click on the map to add a new restaurant</div>
+              <AddRestaurantForm
+                isActive={this.state.isNewRestaurantFormActive}
               />
             </section>
             <section id="restaurantListArea">

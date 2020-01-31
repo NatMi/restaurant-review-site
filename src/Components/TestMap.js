@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Marker from "./Marker.js";
 import restaurantList from "../Data/restaurantList.json";
+import AddRestaurantForm from "./AddRestaurantForm.js";
 
 class TestMap extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class TestMap extends Component {
       activeMarker: false,
       getVisibleRestaurants: [],
       restaurantMarkerList: [],
-      loadReviewsForActiveItem: []
+      loadReviewsForActiveItem: [],
+      showNewRestaurantForm: false
     };
     this.sendData = () => {
       this.props.sendRestaurantData(this.state.getVisibleRestaurants);
@@ -159,13 +161,26 @@ class TestMap extends Component {
     });
 
     // MAP EVENT: Getting coordinates on click.
-    this.state.map.addListener("click", function(event) {
-      let newMapClick = new window.google.maps.Point(
-        event.latLng.lat(),
-        event.latLng.lng()
-      );
+    this.state.map.addListener("rightclick", event => {
+      if (this.state.showNewRestaurantForm === false) {
+        let newMapClick = new window.google.maps.Point(event.latLng);
 
-      console.log("clicked! " + newMapClick);
+        new window.google.maps.Marker({
+          position: event.latLng,
+          map: this.state.map,
+          title: "New restaurant",
+          icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        });
+        this.setState(
+          {
+            showNewRestaurantForm: true
+          },
+          () => {
+            this.props.showNewRestaurantForm(this.state.showNewRestaurantForm);
+          }
+        );
+        console.log("clicked! " + newMapClick);
+      }
     });
   };
 
@@ -173,6 +188,10 @@ class TestMap extends Component {
     for (let i = 0; i < this.state.restaurantMarkerList.length; i++) {
       this.state.restaurantMarkerList[i].setMap(mapName);
     }
+  }
+
+  hideNewRestaurantForm() {
+    this.setState({ showNewRestaurantForm: false });
   }
   detailsRequest() {
     let handleJsonList = () => {
