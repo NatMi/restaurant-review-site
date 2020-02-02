@@ -6,6 +6,7 @@ class AddRestaurantForm extends Component {
     super(props);
     this.state = {
       restaurantName: "",
+      place_id: "",
       formattedAdress: false
     };
   }
@@ -21,6 +22,7 @@ class AddRestaurantForm extends Component {
           (results, status) => {
             if (status == "OK") {
               this.setState({
+                place_id: results[0].place_id,
                 formattedAdress: results[0].formatted_address
               });
             } else {
@@ -43,9 +45,7 @@ class AddRestaurantForm extends Component {
   handleSubmit = event => {
     event.preventDefault();
     let newRestaurant = {
-      place_id:
-        "usersRestaurant" +
-        Math.floor(Math.random() * this.props.getMarkerData.position.lat()),
+      place_id: this.state.place_id,
       name: this.state.restaurantName,
       vicinity: this.state.formattedAdress,
       geometry: {
