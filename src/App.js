@@ -14,24 +14,29 @@ class App extends Component {
     this.state = {
       googleMapsLoaded: false,
       visibleRestaurants: [],
+      restaurantsAddedByUser: [],
       restaurantMarkerList: [],
       activeRestaurant: [],
       activeRestaurantReviews: [],
-      isNewRestaurantFormActive: false
+      isNewRestaurantFormActive: false,
+      newRestaurantMarker: null
     };
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
     };
     this.openNewRestaurantForm = mapData => {
-      this.setState({ isNewRestaurantFormActive: mapData }, () => {
-        console.log(mapData);
+      this.setState({ isNewRestaurantFormActive: mapData });
+    };
+    this.handleNewRestaurantData = formData => {
+      this.setState({
+        restaurantsAddedByUser: formData
       });
+    };
+    this.passNewRestaurantMarkerData = mapData => {
+      this.setState({ newRestaurantMarker: mapData }, () => {});
     };
     this.getReviewsForActiveItem = reviewsData => {
       this.setState({ activeRestaurantReviews: reviewsData });
-      console.log(
-        "App reviews loaded: " + this.state.activeRestaurantReviews.name
-      );
     };
     this.receiveActiveStatusRequest = restaurant => {
       this.setState({ activeRestaurant: restaurant });
@@ -41,13 +46,6 @@ class App extends Component {
   googleMapsScriptLoaded = () => {
     this.setState({ googleMapsLoaded: true });
   };
-
-  componentDidUpdate(prevProps, prevState) {
-    //update check on
-    if (prevState.activeRestaurant !== this.state.activeRestaurant) {
-      console.log("app active restaurant: " + this.state.activeRestaurant.name);
-    }
-  }
 
   componentDidMount = () => {
     if (!window.google) {
@@ -77,15 +75,20 @@ class App extends Component {
             <section id="mapArea">
               <TestMap
                 id="googleMap"
+                restaurantsAddedByUser={this.state.restaurantsAddedByUser}
                 sendRestaurantData={this.getRestaurantData}
                 sendReviewsForActiveItem={this.getReviewsForActiveItem}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 showNewRestaurantForm={this.openNewRestaurantForm}
+                newRestaurantMarker={this.passNewRestaurantMarkerData}
                 activeRestaurant={this.state.activeRestaurant}
               />
               <div>Right-click on the map to add a new restaurant</div>
               <AddRestaurantForm
                 isActive={this.state.isNewRestaurantFormActive}
+                getMarkerData={this.state.newRestaurantMarker}
+                requestSetIsActive={this.openNewRestaurantForm}
+                newRestaurantData={this.handleNewRestaurantData}
               />
             </section>
             <section id="restaurantListArea">

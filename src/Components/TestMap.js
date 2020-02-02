@@ -15,6 +15,7 @@ class TestMap extends Component {
       },
       activeMarker: false,
       getVisibleRestaurants: [],
+      locallyStoredRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: [],
       showNewRestaurantForm: false
@@ -108,11 +109,28 @@ class TestMap extends Component {
         "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
       );
     }
+    if (
+      prevProps.restaurantsAddedByUser != this.props.restaurantsAddedByUser &&
+      this.props.restaurantsAddedByUser !== false
+    ) {
+      this.setState(prevState => ({
+        locallyStoredRestaurants: [
+          ...prevState.locallyStoredRestaurants,
+          this.props.restaurantsAddedByUser
+        ]
+      }));
+    }
   }
 
   componentDidMount = () => {
     this.geolocationApi();
     this.drawGoogleMap();
+    // load restaurants from json
+    restaurantList.forEach(place => {
+      this.setState(prevState => ({
+        locallyStoredRestaurants: [...prevState.locallyStoredRestaurants, place]
+      }));
+    });
 
     // GOOGLE PLACES API
     let searchBounds = {
@@ -134,7 +152,7 @@ class TestMap extends Component {
       }
 
       // check if any restaurant from json file is contained within current google map bounds, if yes, add to state and create marker
-      restaurantList.forEach(place => {
+      this.state.locallyStoredRestaurants.forEach(place => {
         if (this.state.map.getBounds().contains(place.geometry.location))
           this.setState(prevState => ({
             getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
@@ -165,10 +183,11 @@ class TestMap extends Component {
       if (this.state.showNewRestaurantForm === false) {
         let newMapClick = new window.google.maps.Point(event.latLng);
 
-        new window.google.maps.Marker({
+        let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
           map: this.state.map,
           title: "New restaurant",
+          draggable: true,
           icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
         });
         this.setState(
@@ -177,8 +196,11 @@ class TestMap extends Component {
           },
           () => {
             this.props.showNewRestaurantForm(this.state.showNewRestaurantForm);
+            this.props.newRestaurantMarker(newRestaurant);
           }
         );
+        newRestaurant.addListener("");
+        newRestaurant.title = "Woah, updated name!";
         console.log("clicked! " + newMapClick);
       }
     });
