@@ -162,6 +162,14 @@ class TestMap extends Component {
         }
       );
     }
+    if (
+      prevProps.isNewRestaurantFormActive !=
+      this.props.isNewRestaurantFormActive
+    ) {
+      this.setState({
+        showNewRestaurantForm: this.props.isNewRestaurantFormActive
+      });
+    }
   }
 
   componentDidMount = () => {
@@ -181,7 +189,7 @@ class TestMap extends Component {
       this.nearbySearch();
     });
 
-    // MAP EVENT: Getting coordinates on click.
+    // -------> MAP EVENT: New restaurant form on right click <---------
     this.state.map.addListener("rightclick", event => {
       if (this.state.showNewRestaurantForm === false) {
         let newMapClick = new window.google.maps.Point(event.latLng);
@@ -202,9 +210,6 @@ class TestMap extends Component {
             this.props.newRestaurantMarker(newRestaurant);
           }
         );
-        newRestaurant.addListener("");
-        newRestaurant.title = "Woah, updated name!";
-        console.log("clicked! " + newMapClick);
       }
     });
   };
@@ -215,9 +220,6 @@ class TestMap extends Component {
     }
   }
 
-  hideNewRestaurantForm() {
-    this.setState({ showNewRestaurantForm: false });
-  }
   detailsRequest() {
     let handleJsonList = () => {
       // if place_id was not recognised, check json:

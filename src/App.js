@@ -26,6 +26,9 @@ class App extends Component {
     };
     this.openNewRestaurantForm = data => {
       this.setState({ isNewRestaurantFormActive: data });
+      if (data === false) {
+        this.setState({ newRestaurantMarker: null });
+      }
     };
     this.handleNewRestaurantData = formData => {
       this.setState({
@@ -77,11 +80,12 @@ class App extends Component {
                 id="googleMap"
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
                 sendRestaurantData={this.getRestaurantData}
-                sendReviewsForActiveItem={this.getReviewsForActiveItem}
-                requestForActiveStatusToApp={this.receiveActiveStatusRequest}
-                showNewRestaurantForm={this.openNewRestaurantForm}
-                newRestaurantMarker={this.passNewRestaurantMarkerData}
                 activeRestaurant={this.state.activeRestaurant}
+                requestForActiveStatusToApp={this.receiveActiveStatusRequest}
+                sendReviewsForActiveItem={this.getReviewsForActiveItem}
+                showNewRestaurantForm={this.openNewRestaurantForm}
+                isNewRestaurantFormActive={this.state.isNewRestaurantFormActive}
+                newRestaurantMarker={this.passNewRestaurantMarkerData}
               />
               <div>Right-click on the map to add a new restaurant</div>
               <AddRestaurantForm

@@ -9,38 +9,35 @@ class AddRestaurantForm extends Component {
       formattedAdress: false
     };
   }
-  componentDidUpdate() {
-    if (
-      this.state.formattedAdress === false &&
-      this.props.getMarkerData != null
-    ) {
-      let geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode(
-        { location: this.props.getMarkerData.position },
-        (results, status) => {
-          if (status == "OK") {
-            this.setState({
-              formattedAdress: results[0].formatted_address
-            });
-          } else {
-            console.log(status);
+  componentDidUpdate(prevProps) {
+    if (prevProps.getMarkerData != this.props.getMarkerData) {
+      if (
+        this.state.formattedAdress === false &&
+        this.props.getMarkerData != null
+      ) {
+        let geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode(
+          { location: this.props.getMarkerData.position },
+          (results, status) => {
+            if (status == "OK") {
+              this.setState({
+                formattedAdress: results[0].formatted_address
+              });
+            } else {
+              console.log(status);
+            }
           }
-        }
-      );
+        );
+      }
     }
   }
+
   clearFormData() {
-    this.setState(
-      {
-        restaurantName: "",
-        formattedAdress: false
-      },
-      () => {
-        this.props.getMarkerData(null);
-        this.props.getMarkerData(null);
-        this.closeFormNoSave();
-      }
-    );
+    this.setState({}, () => {
+      this.props.getMarkerData(null);
+      this.props.getMarkerData(null);
+      this.closeFormNoSave();
+    });
   }
 
   handleSubmit = event => {
@@ -65,7 +62,9 @@ class AddRestaurantForm extends Component {
 
     this.setState(
       {
-        showNewRestaurantForm: false
+        showNewRestaurantForm: false,
+        restaurantName: "",
+        formattedAdress: false
       },
       () => {
         this.props.requestSetIsActive(this.state.showNewRestaurantForm);
