@@ -71,6 +71,43 @@ class TestMap extends Component {
       return <p>Geolocation unavailable.</p>;
     }
   }
+  nearbySearch = () => {
+    this.setMapOnMarkers(null);
+
+    this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
+    // GOOGLE PLACES API
+    let searchBounds = {
+      bounds: this.state.map.getBounds(),
+      type: ["restaurant"]
+    };
+
+    let handleSearchresults = (results, status) => {
+      this.setState({
+        getVisibleRestaurants: []
+      });
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        results.forEach(place => {
+          //update state with each restaurant found
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+        });
+      }
+
+      // check if any restaurant from json file is contained within current google map bounds, if yes, add to state and create marker
+      this.state.locallyStoredRestaurants.forEach(place => {
+        if (this.state.map.getBounds().contains(place.geometry.location))
+          this.setState(prevState => ({
+            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+          }));
+      });
+      this.sendData();
+
+      this.renderMarkers();
+    };
+
+    this.service().nearbySearch(searchBounds, handleSearchresults);
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
@@ -113,17 +150,24 @@ class TestMap extends Component {
       prevProps.restaurantsAddedByUser != this.props.restaurantsAddedByUser &&
       this.props.restaurantsAddedByUser !== false
     ) {
-      this.setState(prevState => ({
-        locallyStoredRestaurants: [
-          ...prevState.locallyStoredRestaurants,
-          this.props.restaurantsAddedByUser
-        ]
-      }));
+      this.setState(
+        prevState => ({
+          locallyStoredRestaurants: [
+            ...prevState.locallyStoredRestaurants,
+            this.props.restaurantsAddedByUser
+          ]
+        }),
+        () => {
+          this.nearbySearch();
+        }
+      );
     }
   }
 
   componentDidMount = () => {
-    this.geolocationApi();
+    this.geolocationApi(() => {
+      this.nearbySearch();
+    });
     this.drawGoogleMap();
     // load restaurants from json
     restaurantList.forEach(place => {
@@ -132,50 +176,9 @@ class TestMap extends Component {
       }));
     });
 
-    // GOOGLE PLACES API
-    let searchBounds = {
-      bounds: this.state.mapBounds,
-      type: ["restaurant"]
-    };
-
-    let handleSearchresults = (results, status) => {
-      this.setState({
-        getVisibleRestaurants: []
-      });
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        results.forEach(place => {
-          //update state with each restaurant found
-          this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-          }));
-        });
-      }
-
-      // check if any restaurant from json file is contained within current google map bounds, if yes, add to state and create marker
-      this.state.locallyStoredRestaurants.forEach(place => {
-        if (this.state.map.getBounds().contains(place.geometry.location))
-          this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
-          }));
-      });
-      this.sendData();
-
-      this.renderMarkers();
-    };
-
-    this.service().nearbySearch(searchBounds, handleSearchresults);
-
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
-      this.setMapOnMarkers(null);
-
-      this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
-
-      let searchBounds = {
-        bounds: this.state.map.getBounds(),
-        type: ["restaurant"]
-      };
-      this.service().nearbySearch(searchBounds, handleSearchresults);
+      this.nearbySearch();
     });
 
     // MAP EVENT: Getting coordinates on click.
@@ -303,36 +306,30 @@ class TestMap extends Component {
         ]
       }));
 
-      // MAP EVENT: Restaurant marker click
+      // --------> CLICK EVENT: restaurant marker <--------
       this.state.restaurantMarkerList.forEach(marker => {
-        marker.addListener(
-          "click",
-          function() {
-            if (
-              this.state.activeMarker !== false &&
-              this.state.activeRestaurant.place_id !== marker.place_id
-            ) {
-              this.state.activeMarker.setIcon(
-                "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-              );
-            }
-            if (marker.place_id !== this.state.activeRestaurant.place_id) {
-              this.setState({
-                activeMarker: marker
-              });
-              marker.setIcon(
-                "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-              );
-              this.requestForActiveStatusFromMarker(marker.place_id);
-
-              console.log(" marker clicked! " + marker.title);
-            } else {
-              this.setState({
-                activeRestaurant: {}
-              });
-            }
-          }.bind(this)
-        );
+        marker.addListener("click", () => {
+          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to green
+          if (
+            this.state.activeMarker !== false &&
+            this.state.activeRestaurant.place_id !== marker.place_id
+          ) {
+            this.state.activeMarker.setIcon(
+              "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            );
+          }
+          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to blue
+          if (marker.place_id !== this.state.activeRestaurant.place_id) {
+            this.setState({
+              activeMarker: marker
+            });
+            marker.setIcon(
+              "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            );
+            // 3. pass place_id of the clicked marker to App
+            this.requestForActiveStatusFromMarker(marker.place_id);
+          }
+        });
       });
     });
   }
