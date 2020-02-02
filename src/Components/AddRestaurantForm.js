@@ -90,6 +90,11 @@ class AddRestaurantForm extends Component {
       restaurantName: event.target.value
     });
   };
+  handleChangeFormattedAddress = event => {
+    this.setState({
+      formattedAdress: event.target.value
+    });
+  };
 
   render() {
     return (
@@ -104,6 +109,14 @@ class AddRestaurantForm extends Component {
               type="text"
               value={this.state.restaurantName}
               onChange={this.handleChangeRestaurantName}
+            />
+          </label>
+          <label>
+            Address:
+            <input
+              type="text"
+              value={this.state.formattedAdress}
+              onChange={this.handleChangeFormattedAddress}
             />
           </label>
           <button type="submit" type="submit">
