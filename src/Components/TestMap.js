@@ -217,11 +217,11 @@ class TestMap extends Component {
     });
   };
 
-  setMapOnMarkers(mapName) {
-    for (let i = 0; i < this.state.restaurantMarkerList.length; i++) {
-      this.state.restaurantMarkerList[i].setMap(mapName);
-    }
-  }
+  setMapOnMarkers = mapName => {
+    this.state.restaurantMarkerList.forEach(marker => {
+      marker.setMap(mapName);
+    });
+  };
 
   detailsRequest() {
     let handleJsonList = () => {
