@@ -24,8 +24,8 @@ class App extends Component {
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
     };
-    this.openNewRestaurantForm = mapData => {
-      this.setState({ isNewRestaurantFormActive: mapData });
+    this.openNewRestaurantForm = data => {
+      this.setState({ isNewRestaurantFormActive: data });
     };
     this.handleNewRestaurantData = formData => {
       this.setState({

@@ -29,6 +29,19 @@ class AddRestaurantForm extends Component {
       );
     }
   }
+  clearFormData() {
+    this.setState(
+      {
+        restaurantName: "",
+        formattedAdress: false
+      },
+      () => {
+        this.props.getMarkerData(null);
+        this.props.getMarkerData(null);
+        this.closeFormNoSave();
+      }
+    );
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -49,6 +62,15 @@ class AddRestaurantForm extends Component {
       reviews: []
     };
     this.props.newRestaurantData(newRestaurant);
+
+    this.setState(
+      {
+        showNewRestaurantForm: false
+      },
+      () => {
+        this.props.requestSetIsActive(this.state.showNewRestaurantForm);
+      }
+    );
   };
 
   closeFormNoSave = event => {
