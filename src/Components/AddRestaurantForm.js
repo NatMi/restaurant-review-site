@@ -5,15 +5,39 @@ class AddRestaurantForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      restaurantName: ""
+      restaurantName: "",
+      formattedAdress: false
     };
   }
+  componentDidUpdate() {
+    if (
+      this.state.formattedAdress === false &&
+      this.props.getMarkerData != null
+    ) {
+      let geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode(
+        { location: this.props.getMarkerData.position },
+        (results, status) => {
+          if (status == "OK") {
+            this.setState({
+              formattedAdress: results[0].formatted_address
+            });
+          } else {
+            console.log(status);
+          }
+        }
+      );
+    }
+  }
+
   handleSubmit = event => {
     event.preventDefault();
     let newRestaurant = {
-      place_id: "randomPlaceId",
+      place_id:
+        "usersRestaurant" +
+        Math.floor(Math.random() * this.props.getMarkerData.position.lat()),
       name: this.state.restaurantName,
-      vicinity: "235 Morningside Rd, Edinburgh EH10 4QT",
+      vicinity: this.state.formattedAdress,
       geometry: {
         location: {
           lat: this.props.getMarkerData.position.lat(),
