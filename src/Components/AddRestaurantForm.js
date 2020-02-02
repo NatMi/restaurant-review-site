@@ -22,7 +22,8 @@ class AddRestaurantForm extends Component {
           (results, status) => {
             if (status == "OK") {
               this.setState({
-                place_id: results[0].place_id,
+                place_id:
+                  results[0].place_id + this.props.getMarkerData.position.lat(),
                 formattedAdress: results[0].formatted_address
               });
             } else {
