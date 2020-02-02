@@ -169,6 +169,9 @@ class TestMap extends Component {
       this.setState({
         showNewRestaurantForm: this.props.isNewRestaurantFormActive
       });
+      if (this.state.showNewRestaurantForm === false) {
+        this.props.newRestaurantMarker[0].setMap(null);
+      }
     }
   }
 
@@ -223,8 +226,8 @@ class TestMap extends Component {
   detailsRequest() {
     let handleJsonList = () => {
       // if place_id was not recognised, check json:
-      let filterJsonList = () => {
-        let results = restaurantList.filter(
+      let filterLocallyStoredRestaurants = () => {
+        let results = this.state.locallyStoredRestaurants.filter(
           restaurant =>
             restaurant.place_id === this.props.activeRestaurant.place_id
         );
@@ -234,7 +237,7 @@ class TestMap extends Component {
 
       this.setState(
         {
-          loadReviewsForActiveItem: filterJsonList()
+          loadReviewsForActiveItem: filterLocallyStoredRestaurants()
         },
         () => {
           this.sendReviews();
