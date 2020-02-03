@@ -76,6 +76,9 @@ class App extends Component {
           <Header />
           <div className="App-main">
             <section id="mapArea">
+              <div class="infoText">
+                Right-click on the map to add a new restaurant
+              </div>
               <TestMap
                 id="googleMap"
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
@@ -87,7 +90,7 @@ class App extends Component {
                 isNewRestaurantFormActive={this.state.isNewRestaurantFormActive}
                 newRestaurantMarker={this.passNewRestaurantMarkerData}
               />
-              <div>Right-click on the map to add a new restaurant</div>
+
               <AddRestaurantForm
                 isActive={this.state.isNewRestaurantFormActive}
                 getMarkerData={this.state.newRestaurantMarker}
