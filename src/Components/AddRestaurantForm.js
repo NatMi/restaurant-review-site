@@ -92,28 +92,33 @@ class AddRestaurantForm extends Component {
   render() {
     return (
       <div
-        id="newRestaurantFormModal"
-        style={{ display: this.props.isActive === true ? "block" : "none" }}
+        id="newRestaurantFormCard"
+        style={{ display: this.props.isActive === true ? "flex" : "none" }}
       >
+        <h3>New restaurant form</h3>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Restaurant name:
-            <input
-              type="text"
-              value={this.state.restaurantName}
-              onChange={this.handleChangeRestaurantName}
-            />
-          </label>
-          <label>
-            Address:
-            <input
-              type="text"
-              value={this.state.formattedAdress}
-              onChange={this.handleChangeFormattedAddress}
-            />
-          </label>
-          <button type="submit">Add new restaurant</button>
-          <button onClick={this.closeFormNoSave}>Close this form</button>
+          <label for="restaurantName"> Restaurant name:</label>
+          <input
+            id="restaurantName"
+            type="text"
+            value={this.state.restaurantName}
+            onChange={this.handleChangeRestaurantName}
+            required
+          />
+          <label for="restaurantAddress"> Address:</label>
+          <input
+            idfor="restaurantAddress"
+            type="text"
+            value={this.state.formattedAdress}
+            onChange={this.handleChangeFormattedAddress}
+            required
+          />
+          <div id="formButtons">
+            <input type="submit" value="Add restaurant" />
+            <button id="closeForm" onClick={this.closeFormNoSave}>
+              Close form
+            </button>
+          </div>
         </form>
       </div>
     );
