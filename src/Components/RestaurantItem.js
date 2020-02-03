@@ -6,7 +6,7 @@ class RestaurantItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemReviews: []
+      isReviewFormActive: false
     };
     this.requestReviewsForItem = () => {
       this.setState(
@@ -18,7 +18,14 @@ class RestaurantItem extends Component {
         }
       );
     };
+    this.requestNewReviewForm = () => {
+      this.setState({ isActive: true, isReviewFormActive: true }, () => {
+        this.props.requestForActiveReviewForm(this.state.isReviewFormActive);
+        this.props.requestForActiveStatusToSidebar(this.props.restaurant);
+      });
+    };
   }
+
   setLng(restaurant) {
     if (typeof restaurant.geometry.location.lng === "function") {
       return restaurant.geometry.location.lng();
@@ -73,7 +80,12 @@ class RestaurantItem extends Component {
             >
               Read reviews
             </button>
-            <button className="btnAddRestaurantReviews">Add review</button>
+            <button
+              className="btnAddRestaurantReviews"
+              onClick={this.requestNewReviewForm}
+            >
+              Add review
+            </button>
           </div>
         </div>
 

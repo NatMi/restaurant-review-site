@@ -12,16 +12,26 @@ class RestaurantSidebar extends Component {
       currentRestaurantList: [],
       filteredRestaurantList: false,
       activeRestaurant: false,
-      isReviewFormActive: true
+      loadAllReviews: [],
+      userReviews: [],
+      isReviewFormActive: false
     };
     this.loadReviewsFromApp = false;
-    this.receiveActiveStatusRequest = restaurant => {
-      this.setState({ activeRestaurant: restaurant });
+    this.receiveActiveStatusRequest = data => {
+      this.setState({ activeRestaurant: data });
+    };
+    this.receiveActiveReviewFormRequest = data => {
+      this.setState({ isReviewFormActive: data });
     };
     this.getFilteredReviews = filteredData => {
       this.setState({
         filteredRestaurantList: filteredData
       });
+    };
+    this.handleNewReviewData = newReviewData => {
+      this.setState(prevState => ({
+        userReviews: [...prevState.userReviews, newReviewData]
+      }));
     };
   }
 
@@ -46,11 +56,40 @@ class RestaurantSidebar extends Component {
         activeRestaurant: this.props.receiveActiveStatusFromApp
       });
     }
+    if (
+      prevState.userReviews !== this.state.userReviews ||
+      (prevProps.loadReviewsFromApp !== this.props.loadReviewsFromApp &&
+        this.props.loadReviewsFromApp !== [])
+    ) {
+      this.setState(
+        {
+          loadAllReviews: []
+        },
+        () => {
+          this.props.loadReviewsFromApp.forEach(review => {
+            this.setState(prevState => ({
+              loadAllReviews: [...prevState.loadAllReviews, review]
+            }));
+          });
+
+          this.state.userReviews.forEach(userReview => {
+            if (userReview.place_id === this.state.activeRestaurant.place_id) {
+              // console.log(this.props.loadReviewsFromApp);
+              this.setState(prevState => ({
+                loadAllReviews: [...prevState.loadAllReviews, userReview.review]
+              }));
+              // allReviews.push(userReview.review);
+            }
+          });
+        }
+      );
+    }
   }
 
   handleBackToResults = () => {
     this.setState({
-      activeRestaurant: false
+      activeRestaurant: false,
+      isReviewFormActive: false
     });
   };
   renderReviewForm() {
@@ -65,7 +104,11 @@ class RestaurantSidebar extends Component {
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
           isActive={true}
         />
-        <AddReviewForm />
+        <AddReviewForm
+          place_id={this.state.activeRestaurant.place_id}
+          requestSetIsReviewFormOpen={this.receiveActiveReviewFormRequest}
+          newRewievData={this.handleNewReviewData}
+        />
       </div>
     );
   }
@@ -80,6 +123,7 @@ class RestaurantSidebar extends Component {
           restaurant={this.state.activeRestaurant}
           key={this.state.activeRestaurant.place_id}
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+          requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
           isActive={true}
         />
       </div>
@@ -96,11 +140,12 @@ class RestaurantSidebar extends Component {
           isActive={true}
           key={this.state.activeRestaurant.place_id}
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+          requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
         />
         <div id="restaurantList">
           <ItemReview
             key={this.state.activeRestaurant.name}
-            loadReviews={this.props.loadReviewsFromApp}
+            loadReviews={this.state.loadAllReviews}
           />
         </div>
       </div>
@@ -124,6 +169,7 @@ class RestaurantSidebar extends Component {
               isActive={false}
               key={restaurant.place_id}
               requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+              requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
             />
           ))}
         </div>
@@ -145,6 +191,7 @@ class RestaurantSidebar extends Component {
               isActive={false}
               key={restaurant.place_id}
               requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+              requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
             />
           ))}
         </div>
@@ -155,7 +202,7 @@ class RestaurantSidebar extends Component {
   render() {
     if (
       this.state.activeRestaurant !== false &&
-      this.state.isReviewFormActive === true
+      this.state.isReviewFormActive !== false
     ) {
       return this.renderReviewForm();
     } else if (

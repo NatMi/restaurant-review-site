@@ -114,9 +114,11 @@ class TestMap extends Component {
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
-        this.state.activeMarker.setIcon(
-          "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-        );
+        this.nearbySearch();
+        // below is not needed when nearbySearch is performed, though it's not the best option(more requests to google api)
+        // this.state.activeMarker.setIcon(
+        //   "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        // );
         this.setState({ activeMarker: false });
       }
 
@@ -134,7 +136,6 @@ class TestMap extends Component {
         this.detailsRequest();
       }
     }
-
     if (
       prevState.activeMarker !== this.state.activeMarker &&
       this.state.activeMarker !== false
@@ -206,6 +207,7 @@ class TestMap extends Component {
         this.setState(
           prevState => ({
             showNewRestaurantForm: true,
+            activeMarker: newRestaurant,
             restaurantMarkerList: [
               ...prevState.restaurantMarkerList,
               newRestaurant

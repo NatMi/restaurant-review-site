@@ -5,47 +5,38 @@ class AddReviewForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showReviewForm: false,
       authorName: "",
-      reviewText: "",
-      place_id: ""
+      rating: null,
+      reviewText: ""
     };
     this.resetForm = () => {
       this.setState(
         {
-          showNewRestaurantForm: false,
-          restaurantName: "",
-          formattedAdress: ""
+          showReviewForm: false,
+          authorName: "",
+          userRating: null,
+          reviewText: ""
         },
         () => {
-          this.props.requestSetIsActive(this.state.showNewRestaurantForm);
+          this.props.requestSetIsReviewFormOpen(this.state.showReviewForm);
         }
       );
     };
   }
 
-  handleRatingChange = event => {
-    this.setState({
-      userRating: event.target.value
-    });
-  };
-
   handleSubmit = event => {
     event.preventDefault();
-    let newRestaurant = {
-      place_id: this.state.place_id,
-      name: this.state.restaurantName,
-      vicinity: this.state.formattedAdress,
-      geometry: {
-        location: {
-          lat: this.props.getMarkerData.position.lat(),
-          lng: this.props.getMarkerData.position.lng()
-        }
-      },
-      rating: null,
-      user_ratings_total: null,
-      reviews: []
+    let newReview = {
+      place_id: this.props.place_id,
+      review: {
+        author_name: this.state.authorName,
+        rating: this.state.userRating,
+        text: this.state.reviewText
+      }
     };
-    this.props.newRestaurantData(newRestaurant);
+    this.props.newRewievData(newReview);
+    console.log(newReview);
 
     this.resetForm();
   };
@@ -58,6 +49,11 @@ class AddReviewForm extends Component {
   handleChangeAuthorName = event => {
     this.setState({
       authorName: event.target.value
+    });
+  };
+  handleRatingChange = event => {
+    this.setState({
+      userRating: parseInt(event.target.value)
     });
   };
   handleChangereviewText = event => {
@@ -81,44 +77,49 @@ class AddReviewForm extends Component {
           <label htmlFor="userRating"> Your rating:</label>
           <div id="radioButtons">
             <label>
+              <input
+                type="radio"
+                value="1"
+                name="restaurantReview"
+                onChange={this.handleRatingChange}
+              />
               1
+            </label>
+            <label>
               <input
                 type="radio"
+                value="2"
                 name="restaurantReview"
                 onChange={this.handleRatingChange}
               />
-            </label>
-            <label>
               2
+            </label>
+            <label>
               <input
                 type="radio"
+                value="3"
                 name="restaurantReview"
                 onChange={this.handleRatingChange}
               />
-            </label>
-            <label>
               3
+            </label>
+            <label>
               <input
                 type="radio"
+                value="4"
                 name="restaurantReview"
                 onChange={this.handleRatingChange}
               />
-            </label>
-            <label>
               4
-              <input
-                type="radio"
-                name="restaurantReview"
-                onChange={this.handleRatingChange}
-              />
             </label>
             <label>
-              5
               <input
                 type="radio"
+                value="5"
                 name="restaurantReview"
                 onChange={this.handleRatingChange}
               />
+              5
             </label>
           </div>
           <label htmlFor="reviewText"> Your review:</label>
