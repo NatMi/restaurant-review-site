@@ -85,7 +85,7 @@ class Filter extends Component {
 
   render() {
     return (
-      <div id="filterDiv">
+      <div id="filterCard">
         <form onSubmit={this.handleSubmit}>
           <h4>Filter results:</h4>
           <label htmlFor="minRatingSelect">Min: </label>
@@ -109,6 +109,7 @@ class Filter extends Component {
         </form>
         <p className="filterErrorMsg">{this.state.errorMsg}</p>
         <button
+          id="btnClearFilterSearch"
           onClick={this.clearFilter}
           style={{
             opacity: this.state.filterIsActive === true ? 1 : 0.3,

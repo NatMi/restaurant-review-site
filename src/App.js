@@ -77,7 +77,7 @@ class App extends Component {
           <div className="App-main">
             <section id="mapArea">
               <p className="infoText">
-                Right-click on the map to add a new restaurant
+                Right-click place on the map to add a new restaurant
               </p>
               <AddRestaurantForm
                 isActive={this.state.isNewRestaurantFormActive}

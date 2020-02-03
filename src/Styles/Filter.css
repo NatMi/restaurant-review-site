@@ -2,3 +2,25 @@
   font-size: 0.7rem;
   color: rgb(216, 22, 22);
 }
+
+#filterCard form input[type="submit"] {
+  width: fit-content;
+  background-color: #38943b;
+  color: white;
+  padding: 5px 5px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#btnClearFilterSearch {
+  width: fit-content;
+  background-color: #5f5f5f;
+  color: white;
+  padding: 5px 5px;
+  margin-bottom: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
