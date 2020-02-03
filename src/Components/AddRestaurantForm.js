@@ -9,18 +9,27 @@ class AddRestaurantForm extends Component {
       place_id: "",
       formattedAdress: false
     };
+    this.resetForm = () => {
+      this.setState(
+        {
+          showNewRestaurantForm: false,
+          restaurantName: "",
+          formattedAdress: ""
+        },
+        () => {
+          this.props.requestSetIsActive(this.state.showNewRestaurantForm);
+        }
+      );
+    };
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.getMarkerData != this.props.getMarkerData) {
-      if (
-        this.state.formattedAdress === false &&
-        this.props.getMarkerData != null
-      ) {
+    if (prevProps.getMarkerData !== this.props.getMarkerData) {
+      if (this.props.getMarkerData !== null) {
         let geocoder = new window.google.maps.Geocoder();
         geocoder.geocode(
           { location: this.props.getMarkerData.position },
           (results, status) => {
-            if (status == "OK") {
+            if (status === "OK") {
               this.setState({
                 place_id:
                   results[0].place_id + this.props.getMarkerData.position.lat(),
@@ -61,29 +70,13 @@ class AddRestaurantForm extends Component {
     };
     this.props.newRestaurantData(newRestaurant);
 
-    this.setState(
-      {
-        showNewRestaurantForm: false,
-        restaurantName: "",
-        formattedAdress: false
-      },
-      () => {
-        this.props.requestSetIsActive(this.state.showNewRestaurantForm);
-      }
-    );
+    this.resetForm();
   };
 
   closeFormNoSave = event => {
     event.preventDefault();
-
-    this.setState(
-      {
-        showNewRestaurantForm: false
-      },
-      () => {
-        this.props.requestSetIsActive(this.state.showNewRestaurantForm);
-      }
-    );
+    this.props.newRestaurantData(false);
+    this.resetForm();
   };
   handleChangeRestaurantName = event => {
     this.setState({
@@ -119,9 +112,7 @@ class AddRestaurantForm extends Component {
               onChange={this.handleChangeFormattedAddress}
             />
           </label>
-          <button type="submit" type="submit">
-            Add new restaurant
-          </button>
+          <button type="submit">Add new restaurant</button>
           <button onClick={this.closeFormNoSave}>Close this form</button>
         </form>
       </div>

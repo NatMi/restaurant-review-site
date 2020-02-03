@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import Marker from "./Marker.js";
 import restaurantList from "../Data/restaurantList.json";
-import AddRestaurantForm from "./AddRestaurantForm.js";
 
 class TestMap extends Component {
   constructor(props) {
@@ -139,7 +137,7 @@ class TestMap extends Component {
     }
 
     if (
-      prevState.activeMarker != this.state.activeMarker &&
+      prevState.activeMarker !== this.state.activeMarker &&
       this.state.activeMarker !== false
     ) {
       this.state.activeMarker.setIcon(
@@ -147,7 +145,7 @@ class TestMap extends Component {
       );
     }
     if (
-      prevProps.restaurantsAddedByUser != this.props.restaurantsAddedByUser &&
+      prevProps.restaurantsAddedByUser !== this.props.restaurantsAddedByUser &&
       this.props.restaurantsAddedByUser !== false
     ) {
       this.setState(
@@ -163,15 +161,19 @@ class TestMap extends Component {
       );
     }
     if (
-      prevProps.isNewRestaurantFormActive !=
+      prevProps.isNewRestaurantFormActive !==
       this.props.isNewRestaurantFormActive
     ) {
-      this.setState({
-        showNewRestaurantForm: this.props.isNewRestaurantFormActive
-      });
-      if (this.state.showNewRestaurantForm === false) {
-        this.props.newRestaurantMarker[0].setMap(null);
-      }
+      this.setState(
+        {
+          showNewRestaurantForm: this.props.isNewRestaurantFormActive
+        },
+        () => {
+          if (this.state.showNewRestaurantForm === false) {
+            this.nearbySearch();
+          }
+        }
+      );
     }
   }
 
@@ -195,19 +197,21 @@ class TestMap extends Component {
     // -------> MAP EVENT: New restaurant form on right click <---------
     this.state.map.addListener("rightclick", event => {
       if (this.state.showNewRestaurantForm === false) {
-        let newMapClick = new window.google.maps.Point(event.latLng);
-
         let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
           map: this.state.map,
           title: "New restaurant",
-          draggable: true,
           icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
         });
+
         this.setState(
-          {
-            showNewRestaurantForm: true
-          },
+          prevState => ({
+            showNewRestaurantForm: true,
+            restaurantMarkerList: [
+              ...prevState.restaurantMarkerList,
+              newRestaurant
+            ]
+          }),
           () => {
             this.props.showNewRestaurantForm(this.state.showNewRestaurantForm);
             this.props.newRestaurantMarker(newRestaurant);
