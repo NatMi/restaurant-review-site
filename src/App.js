@@ -76,9 +76,15 @@ class App extends Component {
           <Header />
           <div className="App-main">
             <section id="mapArea">
-              <div class="infoText">
+              <p className="infoText">
                 Right-click on the map to add a new restaurant
-              </div>
+              </p>
+              <AddRestaurantForm
+                isActive={this.state.isNewRestaurantFormActive}
+                getMarkerData={this.state.newRestaurantMarker}
+                requestSetIsActive={this.openNewRestaurantForm}
+                newRestaurantData={this.handleNewRestaurantData}
+              />
               <TestMap
                 id="googleMap"
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
@@ -89,13 +95,6 @@ class App extends Component {
                 showNewRestaurantForm={this.openNewRestaurantForm}
                 isNewRestaurantFormActive={this.state.isNewRestaurantFormActive}
                 newRestaurantMarker={this.passNewRestaurantMarkerData}
-              />
-
-              <AddRestaurantForm
-                isActive={this.state.isNewRestaurantFormActive}
-                getMarkerData={this.state.newRestaurantMarker}
-                requestSetIsActive={this.openNewRestaurantForm}
-                newRestaurantData={this.handleNewRestaurantData}
               />
             </section>
             <section id="restaurantListArea">

@@ -344,7 +344,7 @@ class TestMap extends Component {
   }
 
   render() {
-    return <div style={{ width: "100%", height: "100%" }} id={this.props.id} />;
+    return <div className="googleMap" id={this.props.id} />;
   }
 }
 export default TestMap;

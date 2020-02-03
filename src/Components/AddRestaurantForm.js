@@ -22,6 +22,13 @@ class AddRestaurantForm extends Component {
       );
     };
   }
+  componentDidMount() {
+    // document
+    //   .getElementById("newRestaurantFormCard")
+    //   .addEventListener("contextmenu", event => {
+    //     event.preventDefault();
+    //   });
+  }
   componentDidUpdate(prevProps) {
     if (prevProps.getMarkerData !== this.props.getMarkerData) {
       if (this.props.getMarkerData !== null) {
@@ -93,11 +100,13 @@ class AddRestaurantForm extends Component {
     return (
       <div
         id="newRestaurantFormCard"
-        style={{ display: this.props.isActive === true ? "flex" : "none" }}
+        style={{
+          zIndex: this.props.isActive === true ? "1000" : "-1"
+        }}
       >
         <h3>New restaurant form</h3>
         <form onSubmit={this.handleSubmit}>
-          <label for="restaurantName"> Restaurant name:</label>
+          <label htmlFor="restaurantName"> Restaurant name:</label>
           <input
             id="restaurantName"
             type="text"
@@ -105,7 +114,7 @@ class AddRestaurantForm extends Component {
             onChange={this.handleChangeRestaurantName}
             required
           />
-          <label for="restaurantAddress"> Address:</label>
+          <label htmlFor="restaurantAddress"> Address:</label>
           <input
             idfor="restaurantAddress"
             type="text"
