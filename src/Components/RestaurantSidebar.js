@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RestaurantItem from "./RestaurantItem.js";
 import ItemReview from "./ItemReviews.js";
+import AddReviewForm from "./AddReviewForm.js";
 import Filter from "./Filter.js";
 import "../Styles/restaurantSidebar.css";
 
@@ -10,7 +11,8 @@ class RestaurantSidebar extends Component {
     this.state = {
       currentRestaurantList: [],
       filteredRestaurantList: false,
-      activeRestaurant: false
+      activeRestaurant: false,
+      isReviewFormActive: true
     };
     this.loadReviewsFromApp = false;
     this.receiveActiveStatusRequest = restaurant => {
@@ -51,6 +53,22 @@ class RestaurantSidebar extends Component {
       activeRestaurant: false
     });
   };
+  renderReviewForm() {
+    return (
+      <div>
+        <button className="btnBackToResults" onClick={this.handleBackToResults}>
+          Back to results
+        </button>
+        <RestaurantItem
+          restaurant={this.state.activeRestaurant}
+          key={this.state.activeRestaurant.place_id}
+          requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+          isActive={true}
+        />
+        <AddReviewForm />
+      </div>
+    );
+  }
 
   renderActiveNoReviews() {
     return (
@@ -136,6 +154,11 @@ class RestaurantSidebar extends Component {
 
   render() {
     if (
+      this.state.activeRestaurant !== false &&
+      this.state.isReviewFormActive === true
+    ) {
+      return this.renderReviewForm();
+    } else if (
       this.state.activeRestaurant !== false &&
       this.props.loadReviewsFromApp !== undefined
     ) {

@@ -109,7 +109,6 @@ class TestMap extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      console.log("Map active restaurant: " + this.props.activeRestaurant.name);
       // check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green
       if (
         this.props.activeRestaurant === false &&
