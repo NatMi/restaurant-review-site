@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "../Styles/restaurantSidebar.css";
-import ItemReview from "./ItemReviews.js";
 import googleMapsKey from "../Data/googleMapsKey.json";
 
 class RestaurantItem extends Component {
