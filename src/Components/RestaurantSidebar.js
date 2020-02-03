@@ -78,7 +78,6 @@ class RestaurantSidebar extends Component {
           isActive={true}
           key={this.state.activeRestaurant.place_id}
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-          isActive={true}
         />
         <div id="restaurantList">
           <ItemReview
