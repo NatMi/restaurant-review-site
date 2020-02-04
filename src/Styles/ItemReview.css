@@ -1,5 +1,4 @@
 .restaurantReviewCard {
-  display: flex;
   flex-direction: column;
   justify-content: space-around;
   background-color: #ffffff;
@@ -7,7 +6,8 @@
   font-size: 13px;
   line-height: 1rem;
   text-align: left;
-  padding: 0.7rem;
+  padding: 0.2rem;
+  margin: 1px;
   border: 1px solid #97979728;
   box-shadow: 3px 3px 3px #dddddd;
   transition: all 0.5s;

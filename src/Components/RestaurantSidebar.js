@@ -141,7 +141,7 @@ class RestaurantSidebar extends Component {
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
           requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
         />
-        <div id="restaurantList">
+        <div id="reviewList">
           <ItemReview
             key={this.state.activeRestaurant.name}
             loadReviews={this.state.loadAllReviews}
