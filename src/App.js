@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./Styles/App.css";
 import Header from "./Components/Header.js";
 import Footer from "./Components/Footer.js";
-import TestMap from "./Components/TestMap.js";
+import Map from "./Components/TestMap.js";
 import RestaurantSidebar from "./Components/RestaurantSidebar.js";
 import AddRestaurantForm from "./Components/AddRestaurantForm.js";
 import googleMapsKey from "./Data/googleMapsKey.json";
@@ -81,7 +81,7 @@ class App extends Component {
                 requestSetIsActive={this.openNewRestaurantForm}
                 newRestaurantData={this.handleNewRestaurantData}
               />
-              <TestMap
+              <Map
                 id="googleMap"
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
                 sendRestaurantData={this.getRestaurantData}

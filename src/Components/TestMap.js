@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import restaurantList from "../Data/restaurantList.json";
 
-class TestMap extends Component {
+class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -141,7 +141,7 @@ class TestMap extends Component {
       this.state.activeMarker !== false
     ) {
       this.state.activeMarker.setIcon(
-        "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
       );
     }
     if (
@@ -202,7 +202,7 @@ class TestMap extends Component {
           position: event.latLng,
           map: this.state.map,
           title: "New restaurant",
-          icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
         });
 
         this.setState(
@@ -295,9 +295,9 @@ class TestMap extends Component {
     //add restaurant markers
     let markerColor = restaurant => {
       if (restaurant.place_id === this.props.activeRestaurant.place_id) {
-        return "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
-      } else {
         return "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+      } else {
+        return "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
       }
     };
 
@@ -326,7 +326,7 @@ class TestMap extends Component {
             this.state.activeRestaurant.place_id !== marker.place_id
           ) {
             this.state.activeMarker.setIcon(
-              "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+              "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
             );
           }
           // 2. If the marker which was clicked is not set as active yet, update state and change its icon to blue
@@ -335,7 +335,7 @@ class TestMap extends Component {
               activeMarker: marker
             });
             marker.setIcon(
-              "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
             );
             // 3. pass place_id of the clicked marker to App
             this.requestForActiveStatusFromMarker(marker.place_id);
@@ -349,4 +349,4 @@ class TestMap extends Component {
     return <div className="googleMap" id={this.props.id} />;
   }
 }
-export default TestMap;
+export default Map;
