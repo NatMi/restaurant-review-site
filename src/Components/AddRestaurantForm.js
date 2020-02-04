@@ -22,13 +22,7 @@ class AddRestaurantForm extends Component {
       );
     };
   }
-  componentDidMount() {
-    // document
-    //   .getElementById("newRestaurantFormCard")
-    //   .addEventListener("contextmenu", event => {
-    //     event.preventDefault();
-    //   });
-  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.getMarkerData !== this.props.getMarkerData) {
       if (this.props.getMarkerData !== null) {

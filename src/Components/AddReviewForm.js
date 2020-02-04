@@ -36,7 +36,6 @@ class AddReviewForm extends Component {
       }
     };
     this.props.newRewievData(newReview);
-    console.log(newReview);
 
     this.resetForm();
   };
@@ -82,6 +81,7 @@ class AddReviewForm extends Component {
                 value="1"
                 name="restaurantReview"
                 onChange={this.handleRatingChange}
+                required
               />
               1
             </label>

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./Styles/App.css";
 import Header from "./Components/Header.js";
 import Footer from "./Components/Footer.js";
-// import Map from "./Components/Map.js";
 import TestMap from "./Components/TestMap.js";
 import RestaurantSidebar from "./Components/RestaurantSidebar.js";
 import AddRestaurantForm from "./Components/AddRestaurantForm.js";
@@ -76,9 +75,6 @@ class App extends Component {
           <Header />
           <div className="App-main">
             <section id="mapArea">
-              <p className="infoText">
-                Right-click place on the map to add a new restaurant
-              </p>
               <AddRestaurantForm
                 isActive={this.state.isNewRestaurantFormActive}
                 getMarkerData={this.state.newRestaurantMarker}
@@ -96,6 +92,9 @@ class App extends Component {
                 isNewRestaurantFormActive={this.state.isNewRestaurantFormActive}
                 newRestaurantMarker={this.passNewRestaurantMarkerData}
               />
+              <p className="infoText">
+                Right-click place on the map to add a new restaurant
+              </p>
             </section>
             <section id="restaurantListArea">
               <RestaurantSidebar

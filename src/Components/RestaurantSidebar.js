@@ -61,6 +61,7 @@ class RestaurantSidebar extends Component {
       (prevProps.loadReviewsFromApp !== this.props.loadReviewsFromApp &&
         this.props.loadReviewsFromApp !== [])
     ) {
+      // can I do this other way?
       this.setState(
         {
           loadAllReviews: []
@@ -74,11 +75,9 @@ class RestaurantSidebar extends Component {
 
           this.state.userReviews.forEach(userReview => {
             if (userReview.place_id === this.state.activeRestaurant.place_id) {
-              // console.log(this.props.loadReviewsFromApp);
               this.setState(prevState => ({
                 loadAllReviews: [...prevState.loadAllReviews, userReview.review]
               }));
-              // allReviews.push(userReview.review);
             }
           });
         }
@@ -154,15 +153,15 @@ class RestaurantSidebar extends Component {
   renderFilteredResults() {
     return (
       <div>
-        <h3>
-          {"Showing filtered results: "}
-          {this.state.filteredRestaurantList.length}
-        </h3>
         <Filter
           restaurantsToFilter={this.state.currentRestaurantList}
           filteredRestaurantList={this.getFilteredReviews}
         />
         <div id="restaurantList">
+          <h3>
+            Showing filtered results:
+            {this.state.filteredRestaurantList.length}
+          </h3>
           {this.state.filteredRestaurantList.map(restaurant => (
             <RestaurantItem
               restaurant={restaurant}
@@ -179,12 +178,12 @@ class RestaurantSidebar extends Component {
   renderResults() {
     return (
       <div>
-        <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
         <Filter
           restaurantsToFilter={this.state.currentRestaurantList}
           filteredRestaurantList={this.getFilteredReviews}
         />
         <div id="restaurantList">
+          <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
           {this.props.getVisibleRestaurants.map(restaurant => (
             <RestaurantItem
               restaurant={restaurant}
@@ -226,6 +225,13 @@ class RestaurantSidebar extends Component {
       return (
         <div id="restaurantList">
           <h3>No restaurants found in this area.</h3>
+          <h4>What you can do? </h4>
+          <p>
+            1. Add a new restaurant by right-clicking place on a map and
+            submitting new restaurant details.
+          </p>
+          <p></p>
+          <p>2. Zoom out or move map to allow further search.</p>
         </div>
       );
     }

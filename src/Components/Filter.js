@@ -86,7 +86,7 @@ class Filter extends Component {
   render() {
     return (
       <div id="filterCard">
-        <form onSubmit={this.handleSubmit}>
+        <form>
           <h4>Filter results:</h4>
           <label htmlFor="minRatingSelect">Min: </label>
           {this.renderMinimumSelect()}
@@ -105,19 +105,25 @@ class Filter extends Component {
             <option value="5">5</option>
           </select>
 
-          <input type="submit" value="Apply filter" />
+          <input
+            type="submit"
+            value="Apply filter"
+            onClick={this.handleSubmit}
+          />
+          <button
+            id="btnClearFilterSearch"
+            onClick={this.clearFilter}
+            style={{
+              opacity: this.state.filterIsActive === true ? 1 : 0.3,
+              pointerEvents:
+                this.state.filterIsActive === true ? "auto" : "none"
+            }}
+          >
+            Clear filter
+          </button>
         </form>
+
         <p className="filterErrorMsg">{this.state.errorMsg}</p>
-        <button
-          id="btnClearFilterSearch"
-          onClick={this.clearFilter}
-          style={{
-            opacity: this.state.filterIsActive === true ? 1 : 0.3,
-            pointerEvents: this.state.filterIsActive === true ? "auto" : "none"
-          }}
-        >
-          Clear filter
-        </button>
       </div>
     );
   }

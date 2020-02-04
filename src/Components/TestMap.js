@@ -191,6 +191,7 @@ class TestMap extends Component {
 
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
+      this.setState({ activeRestaurant: false });
       this.nearbySearch();
     });
 
