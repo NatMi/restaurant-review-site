@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Styles/App.css";
 import Header from "./Components/Header.js";
+import Filter from "./Components/Filter.js";
 import Footer from "./Components/Footer.js";
 import Map from "./Components/Map.js";
 import RestaurantSidebar from "./Components/RestaurantSidebar.js";
@@ -72,7 +73,13 @@ class App extends Component {
     } else {
       return (
         <div className="App-body">
-          <Header />
+          <section id="topBar">
+            <Header />
+            <Filter
+              restaurantsToFilter={this.state.currentRestaurantList}
+              filteredRestaurantList={this.getFilteredReviews}
+            />
+          </section>
           <div className="App-main">
             <section id="mapArea">
               <AddRestaurantForm

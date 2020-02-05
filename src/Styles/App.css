@@ -3,6 +3,11 @@
 .App-body {
   background-color: #f5f5f5;
 }
+#topBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #242225;
+}
 
 .App-header {
   height: 70px;
@@ -11,8 +16,6 @@
   align-content: center;
   justify-content: flex-start;
   align-items: center;
-  color: rgb(27, 27, 27);
-  background-color: #242225;
 }
 .App-header h1 {
   padding: 10px 0 0 10px;

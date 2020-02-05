@@ -1,8 +1,10 @@
 #filterCard {
   display: flex;
   justify-content: flex-start;
-  /* background-color: #242225;
-  color: white; */
+  color: white;
+  padding: 1rem;
+  margin-right: 2rem;
+  background-color: rgb(43, 43, 43);
 }
 .filterErrorMsg {
   font-size: 0.7rem;
