@@ -7,10 +7,10 @@
   display: flex;
   justify-content: space-between;
   background-color: #242225;
+  height: 75px;
 }
 
 .App-header {
-  height: 70px;
   padding: 0 1vw;
   display: flex;
   align-content: center;

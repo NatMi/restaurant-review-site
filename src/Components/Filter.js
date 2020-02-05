@@ -96,8 +96,8 @@ class Filter extends Component {
   render() {
     return (
       <div id="filterCard">
+        <h4>Filter results:</h4>
         <form id="filterForm">
-          <h4>Filter results:</h4>
           <label htmlFor="minRatingSelect">Minimum: </label>
           {this.renderMinimumSelect()}
 
@@ -132,8 +132,7 @@ class Filter extends Component {
             Clear filter
           </button>
         </form>
-
-        <p className="filterErrorMsg">{this.state.errorMsg}</p>
+        <div className="filterErrorMsg">{this.state.errorMsg}</div>
       </div>
     );
   }
