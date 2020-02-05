@@ -5,18 +5,23 @@ class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectMinimumRating: 1,
+      selectMinimumRating: 0,
       selectMaximumRating: 5,
       filteredRestaurants: [],
       filterIsActive: false,
       errorMsg: ""
     };
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.restaurantsToFilter !== prevProps.restaurantsToFilter) {
+      this.filterRestaurantsTest();
+    }
+  }
 
   clearFilter = () => {
     this.setState(
       {
-        selectMinimumRating: 1,
+        selectMinimumRating: 0,
         selectMaximumRating: 5,
         filteredRestaurants: false,
         filterIsActive: false,
@@ -27,20 +32,20 @@ class Filter extends Component {
       }
     );
   };
-  filterRestaurants() {
-    return this.props.restaurantsToFilter.filter(
-      restaurants =>
-        restaurants.rating >= this.state.selectMinimumRating &&
-        restaurants.rating <= this.state.selectMaximumRating
-    );
-  }
-  handleSubmit = event => {
-    event.preventDefault();
-    let filteredRestaurants = this.filterRestaurants();
+
+  filterRestaurantsTest = () => {
+    let filteredRestaurants = () => {
+      return this.props.restaurantsToFilter.filter(
+        restaurants =>
+          restaurants.rating >= this.state.selectMinimumRating &&
+          restaurants.rating <= this.state.selectMaximumRating
+      );
+    };
+
     if (this.state.selectMinimumRating <= this.state.selectMaximumRating) {
       this.setState(
         {
-          filteredRestaurants: filteredRestaurants,
+          filteredRestaurants: filteredRestaurants(),
           errorMsg: "",
           filterIsActive: true
         },
@@ -54,6 +59,10 @@ class Filter extends Component {
           "Minimum rating value has to be smaller than maximum. Please adjust."
       });
     }
+  };
+  handleSubmit = event => {
+    event.preventDefault();
+    this.filterRestaurantsTest();
   };
   handleChangeMinimumRating = event => {
     this.setState({
@@ -74,6 +83,7 @@ class Filter extends Component {
         value={this.state.selectMinimumRating}
         onChange={this.handleChangeMinimumRating}
       >
+        <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>

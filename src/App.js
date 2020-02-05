@@ -14,12 +14,18 @@ class App extends Component {
     this.state = {
       googleMapsLoaded: false,
       visibleRestaurants: [],
+      filteredRestaurantList: [],
       restaurantsAddedByUser: [],
       restaurantMarkerList: [],
       activeRestaurant: [],
       activeRestaurantReviews: [],
       isNewRestaurantFormActive: false,
       newRestaurantMarker: null
+    };
+    this.getFilteredReviews = filteredData => {
+      this.setState({
+        filteredRestaurantList: filteredData
+      });
     };
     this.getRestaurantData = mapData => {
       this.setState({ visibleRestaurants: mapData });
@@ -76,7 +82,7 @@ class App extends Component {
           <section id="topBar">
             <Header />
             <Filter
-              restaurantsToFilter={this.state.currentRestaurantList}
+              restaurantsToFilter={this.state.visibleRestaurants}
               filteredRestaurantList={this.getFilteredReviews}
             />
           </section>
@@ -105,7 +111,7 @@ class App extends Component {
             </section>
             <section id="restaurantListArea">
               <RestaurantSidebar
-                getVisibleRestaurants={this.state.visibleRestaurants}
+                getVisibleRestaurants={this.state.filteredRestaurantList}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 receiveActiveStatusFromApp={this.state.activeRestaurant}
                 loadReviewsFromApp={this.state.activeRestaurantReviews.reviews}

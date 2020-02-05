@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import RestaurantItem from "./RestaurantItem.js";
 import ItemReview from "./ItemReviews.js";
 import AddReviewForm from "./AddReviewForm.js";
-import Filter from "./Filter.js";
 import "../Styles/restaurantSidebar.css";
 
 class RestaurantSidebar extends Component {
@@ -10,7 +9,6 @@ class RestaurantSidebar extends Component {
     super(props);
     this.state = {
       currentRestaurantList: [],
-      filteredRestaurantList: false,
       activeRestaurant: false,
       loadAllReviews: [],
       userReviews: [],
@@ -22,11 +20,6 @@ class RestaurantSidebar extends Component {
     };
     this.receiveActiveReviewFormRequest = data => {
       this.setState({ isReviewFormActive: data });
-    };
-    this.getFilteredReviews = filteredData => {
-      this.setState({
-        filteredRestaurantList: filteredData
-      });
     };
     this.handleNewReviewData = newReviewData => {
       this.setState(prevState => ({
@@ -40,8 +33,7 @@ class RestaurantSidebar extends Component {
     // update check on restaurant list:
     if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
       this.setState({
-        currentRestaurantList: this.props.getVisibleRestaurants,
-        filteredRestaurantList: false
+        currentRestaurantList: this.props.getVisibleRestaurants
       });
     }
     //update check on
@@ -150,50 +142,19 @@ class RestaurantSidebar extends Component {
       </div>
     );
   }
-  renderFilteredResults() {
-    return (
-      <div>
-        <Filter
-          restaurantsToFilter={this.state.currentRestaurantList}
-          filteredRestaurantList={this.getFilteredReviews}
-        />
-        <div id="restaurantList">
-          <h3>
-            Showing filtered results:
-            {this.state.filteredRestaurantList.length}
-          </h3>
-          {this.state.filteredRestaurantList.map(restaurant => (
-            <RestaurantItem
-              restaurant={restaurant}
-              isActive={false}
-              key={restaurant.place_id}
-              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-              requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
   renderResults() {
     return (
-      <div>
-        <Filter
-          restaurantsToFilter={this.state.currentRestaurantList}
-          filteredRestaurantList={this.getFilteredReviews}
-        />
-        <div id="restaurantList">
-          <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
-          {this.props.getVisibleRestaurants.map(restaurant => (
-            <RestaurantItem
-              restaurant={restaurant}
-              isActive={false}
-              key={restaurant.place_id}
-              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-              requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
-            />
-          ))}
-        </div>
+      <div id="restaurantList">
+        <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
+        {this.props.getVisibleRestaurants.map(restaurant => (
+          <RestaurantItem
+            restaurant={restaurant}
+            isActive={false}
+            key={restaurant.place_id}
+            requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+            requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
+          />
+        ))}
       </div>
     );
   }
@@ -214,13 +175,8 @@ class RestaurantSidebar extends Component {
       this.props.loadReviewsFromApp === undefined
     ) {
       return this.renderActiveNoReviews();
-    } else if (
-      this.props.getVisibleRestaurants.length > 0 &&
-      this.state.filteredRestaurantList === false
-    ) {
+    } else if (this.props.getVisibleRestaurants.length > 0) {
       return this.renderResults();
-    } else if (this.state.filteredRestaurantList !== false) {
-      return this.renderFilteredResults();
     } else {
       return (
         <div id="restaurantList">
