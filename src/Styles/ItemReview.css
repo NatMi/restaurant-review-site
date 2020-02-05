@@ -1,4 +1,5 @@
 .restaurantReviewCard {
+  display: flex;
   flex-direction: column;
   justify-content: space-around;
   background-color: #ffffff;
@@ -6,14 +7,33 @@
   font-size: 13px;
   line-height: 1rem;
   text-align: left;
-  padding: 0.7rem;
   margin: 0.3rem;
-  border: 1px solid #97979728;
+  border: 1px solid #45659473;
+  border-radius: 6px;
   transition: all 0.5s;
-  z-index:-1
+  overflow: hidden;
+  box-sizing: border-box;
 }
-
+.reviewHeader {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  background-color: #4e92c7;
+  color: white;
+}
+.restaurantRating {
+  text-align: center;
+  background-color: #3b7cad;
+  width: 10%;
+  padding: 0.4rem;
+}
 .authorName {
-  font-weight: bold;
+  width: 90%;
   font-size: 14px;
+  padding: 0.4rem 0.7rem;
+}
+.reviewText {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
 }

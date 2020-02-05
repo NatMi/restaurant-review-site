@@ -30,13 +30,12 @@ h4 {
 }
 .App-main {
   display: flex;
-  justify-content: space-around;
   min-height: 90vh;
 }
 #mapArea {
-  width: 90vw;
-  height: 89vh;
-  margin-bottom: 2rem;
+  width: 80vw;
+  height: 85vh;
+  margin-bottom: 1rem;
 }
 .googleMap {
   /*position: absolute;*/
@@ -44,6 +43,7 @@ h4 {
   height: 100%;
 }
 #restaurantListArea {
+  width: 35vw;
   height: 80vh;
 }
 

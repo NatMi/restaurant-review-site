@@ -42,9 +42,9 @@ class RestaurantItem extends Component {
   }
   checkRating(restaurant) {
     if (restaurant.rating <= 0 || restaurant.rating === undefined) {
-      return "No reviews found yet.";
+      return "No reviews added";
     } else {
-      return `${restaurant.rating} / 5`;
+      return `${restaurant.rating} ★`;
     }
   }
 
@@ -63,7 +63,10 @@ class RestaurantItem extends Component {
     return (
       /*restaurant card: */
       <div className="restaurantCard">
-                <div className="restaurantCardStreetView">
+        <div className="restaurantCardStreetView">
+          <p className="restaurantItemRating">
+            {this.checkRating(this.props.restaurant)}
+          </p>
           <img
             alt={this.props.restaurant.name}
             className="streetViewImg"
@@ -72,9 +75,6 @@ class RestaurantItem extends Component {
         </div>
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
-          <p className="restaurantRating">
-            {this.checkRating(this.props.restaurant)}
-          </p>
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
             <button
@@ -95,7 +95,6 @@ class RestaurantItem extends Component {
             </button>
           </div>
         </div>
-
       </div>
     );
   }

@@ -1,6 +1,8 @@
 #filterCard {
   display: flex;
   justify-content: flex-start;
+  /* background-color: #242225;
+  color: white; */
 }
 .filterErrorMsg {
   font-size: 0.7rem;

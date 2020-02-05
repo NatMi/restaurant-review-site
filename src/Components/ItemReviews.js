@@ -11,9 +11,9 @@ class ItemReview extends Component {
               className="restaurantReviewCard"
               key={review.place_id + review.author_name}
             >
-              <div className="authorName"> {review.author_name} </div>
               <div className="reviewHeader">
-                <div className="restaurantRating">{review.rating}</div>
+                <div className="restaurantRating">{review.rating} ★</div>
+                <div className="authorName"> {review.author_name} </div>
               </div>
               <div className="reviewBody">
                 <p className="reviewText"> {review.text}</p>

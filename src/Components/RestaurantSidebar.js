@@ -132,7 +132,7 @@ class RestaurantSidebar extends Component {
     return (
       <div>
         <button className="btnBackToResults" onClick={this.handleBackToResults}>
-          Back to results
+          {"« Back to results"}
         </button>
         <RestaurantItem
           restaurant={this.state.activeRestaurant}
