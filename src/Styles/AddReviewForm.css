@@ -1,11 +1,12 @@
 #restaurantreviewFormCard {
+  align-self: center;
   font-size: 13px;
   align-self: center;
   flex-direction: column;
-  margin-top: 2px;
   border: solid 1px #d6e0d7;
   background-color: #eaf5eb;
-  padding: 0.3rem;
+  margin: 2rem;
+  padding: 10px;
   transition: all 0.5s;
 }
 

@@ -34,8 +34,8 @@ h4 {
   min-height: 90vh;
 }
 #mapArea {
-  width: 63vw;
-  height: 85vh;
+  width: 90vw;
+  height: 89vh;
   margin-bottom: 2rem;
 }
 .googleMap {
@@ -44,7 +44,6 @@ h4 {
   height: 100%;
 }
 #restaurantListArea {
-  width: 35vw;
   height: 80vh;
 }
 

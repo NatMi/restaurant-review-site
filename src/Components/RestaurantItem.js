@@ -63,6 +63,13 @@ class RestaurantItem extends Component {
     return (
       /*restaurant card: */
       <div className="restaurantCard">
+                <div className="restaurantCardStreetView">
+          <img
+            alt={this.props.restaurant.name}
+            className="streetViewImg"
+            src={this.streetViewUrl()}
+          ></img>
+        </div>
         <div className="restaurantCardInfo">
           <h4 className="restaurantName">{this.props.restaurant.name}</h4>
           <p className="restaurantRating">
@@ -89,13 +96,6 @@ class RestaurantItem extends Component {
           </div>
         </div>
 
-        <div className="restaurantCardStreetView">
-          <img
-            alt={this.props.restaurant.name}
-            className="streetViewImg"
-            src={this.streetViewUrl()}
-          ></img>
-        </div>
       </div>
     );
   }
