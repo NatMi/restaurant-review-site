@@ -86,12 +86,12 @@ class Filter extends Component {
   render() {
     return (
       <div id="filterCard">
-        <form>
+        <form id="filterForm">
           <h4>Filter results:</h4>
-          <label htmlFor="minRatingSelect">Min: </label>
+          <label htmlFor="minRatingSelect">Minimum: </label>
           {this.renderMinimumSelect()}
 
-          <label htmlFor="maxRatingSelect">Max: </label>
+          <label htmlFor="maxRatingSelect">Maximum: </label>
           <select
             id="maxRating"
             name="maxRatingSelect"
