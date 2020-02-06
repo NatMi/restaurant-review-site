@@ -8,61 +8,54 @@ class Filter extends Component {
       selectMinimumRating: 0,
       selectMaximumRating: 5,
       filteredRestaurants: [],
-      filterIsActive: false,
+      clearFilter: false,
       errorMsg: ""
     };
   }
+  //  Filters visible restaurant list as soon as they are loaded from app component (default filter settings show all results).
   componentDidUpdate(prevProps) {
     if (this.props.restaurantsToFilter !== prevProps.restaurantsToFilter) {
-      this.filterRestaurantsTest();
+      this.filterRestaurants();
     }
   }
 
-  clearFilter = () => {
-    this.setState(
-      {
-        selectMinimumRating: 0,
-        selectMaximumRating: 5,
-        filteredRestaurants: false,
-        filterIsActive: false,
-        errorMsg: ""
-      },
-      () => {
-        this.props.filteredRestaurantList(this.state.filteredRestaurants);
-      }
-    );
-  };
-
-  filterRestaurantsTest = () => {
-    let filteredRestaurants = () => {
-      return this.props.restaurantsToFilter.filter(
-        restaurants =>
-          restaurants.rating >= this.state.selectMinimumRating &&
-          restaurants.rating <= this.state.selectMaximumRating
-      );
-    };
-
+  filterRestaurants = () => {
+    //  1. Checks if filter values are set correcltly. If not, error message is shown.
     if (this.state.selectMinimumRating <= this.state.selectMaximumRating) {
-      this.setState(
-        {
-          filteredRestaurants: filteredRestaurants(),
-          errorMsg: "",
-          filterIsActive: true
-        },
-        () => {
-          this.props.filteredRestaurantList(this.state.filteredRestaurants);
+      //  2. Creates new array by filtering out restaurants matching filtering criteria.
+      let filteredRestaurants = () => {
+        return this.props.restaurantsToFilter.filter(
+          restaurants =>
+            restaurants.rating >= this.state.selectMinimumRating &&
+            restaurants.rating <= this.state.selectMaximumRating
+        );
+      };
+      //  3. Checks  filter values. If they are the same as default, "clear filter" button is not active.
+      let checkClearFilter = () => {
+        if (
+          this.state.selectMinimumRating === 0 &&
+          this.state.selectMaximumRating === 5
+        ) {
+          return false;
         }
-      );
+        return true;
+      };
+      //  4. Clears error message if there was any, sets clear filter button and pushes filteredRestaurants array to props
+      this.setState({ clearFilter: checkClearFilter(), errorMsg: "" }, () => {
+        this.props.filteredRestaurantList(filteredRestaurants());
+      });
     } else {
       this.setState({
+        clearFilter: true,
         errorMsg:
           "Minimum rating value has to be smaller than maximum. Please adjust."
       });
     }
   };
+
   handleSubmit = event => {
+    this.filterRestaurants();
     event.preventDefault();
-    this.filterRestaurantsTest();
   };
   handleChangeMinimumRating = event => {
     this.setState({
@@ -74,23 +67,20 @@ class Filter extends Component {
       selectMaximumRating: event.target.value
     });
   };
-
-  renderMinimumSelect = () => {
-    return (
-      <select
-        id="minRating"
-        name="minRatingSelect"
-        value={this.state.selectMinimumRating}
-        onChange={this.handleChangeMinimumRating}
-      >
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+  //  Sets filter to default settings
+  clearFilter = event => {
+    this.setState(
+      {
+        selectMinimumRating: 0,
+        selectMaximumRating: 5,
+        clearFilter: false,
+        errorMsg: ""
+      },
+      () => {
+        this.filterRestaurants();
+      }
     );
+    event.preventDefault();
   };
 
   render() {
@@ -99,7 +89,19 @@ class Filter extends Component {
         <h4>Filter results:</h4>
         <form id="filterForm">
           <label htmlFor="minRatingSelect">Minimum: </label>
-          {this.renderMinimumSelect()}
+          <select
+            id="minRating"
+            name="minRatingSelect"
+            value={this.state.selectMinimumRating}
+            onChange={this.handleChangeMinimumRating}
+          >
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
 
           <label htmlFor="maxRatingSelect">Maximum: </label>
           <select
@@ -123,11 +125,11 @@ class Filter extends Component {
           <button
             id="btnClearFilterSearch"
             onClick={this.clearFilter}
-            style={{
-              opacity: this.state.filterIsActive === true ? 1 : 0.3,
-              pointerEvents:
-                this.state.filterIsActive === true ? "auto" : "none"
-            }}
+            className={
+              this.state.clearFilter === true
+                ? "clearFilterActive"
+                : "clearFilterDisabled"
+            }
           >
             Clear filter
           </button>
