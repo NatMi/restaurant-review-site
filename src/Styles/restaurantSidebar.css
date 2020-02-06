@@ -14,7 +14,6 @@
 h4 {
   margin: 0;
   padding: 0;
-  text-align: center;
 }
 #restaurantList {
   height: 85vh;
@@ -92,12 +91,7 @@ h4 {
   display: flex;
   justify-content: space-evenly;
 }
-#filterDiv {
-  margin-bottom: 1rem;
-}
-#filterDiv h4 {
-  margin-bottom: 0;
-}
+
 .btnBackToResults {
   margin-bottom: 1rem;
 }
