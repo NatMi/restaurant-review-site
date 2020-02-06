@@ -144,17 +144,19 @@ class RestaurantSidebar extends Component {
   }
   renderResults() {
     return (
-      <div id="restaurantList">
+      <div id="sidebar">
         <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
-        {this.props.getVisibleRestaurants.map(restaurant => (
-          <RestaurantItem
-            restaurant={restaurant}
-            isActive={false}
-            key={restaurant.place_id}
-            requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-            requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
-          />
-        ))}
+        <div id="restaurantList">
+          {this.props.getVisibleRestaurants.map(restaurant => (
+            <RestaurantItem
+              restaurant={restaurant}
+              isActive={false}
+              key={restaurant.place_id}
+              requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
+              requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -176,15 +178,17 @@ class RestaurantSidebar extends Component {
       return this.renderResults();
     } else {
       return (
-        <div id="restaurantList">
+        <div id="sidebar">
           <h3>No restaurants found in this area.</h3>
-          <h4>What you can do? </h4>
-          <p>
-            1. Add a new restaurant by right-clicking place on a map and
-            submitting new restaurant details.
-          </p>
-          <p></p>
-          <p>2. Zoom out or move map to allow further search.</p>
+          <div id="sidebarInfo">
+            <h4>What you can do? </h4>
+            <p>
+              1. Add a new restaurant by right-clicking place on a map and
+              submitting new restaurant details.
+            </p>
+            <p></p>
+            <p>2. Zoom out or move map to allow further search.</p>
+          </div>
         </div>
       );
     }
