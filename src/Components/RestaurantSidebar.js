@@ -22,15 +22,16 @@ class RestaurantSidebar extends Component {
       this.setState({ isReviewFormActive: data });
     };
     this.handleNewReviewData = newReviewData => {
-      this.setState(prevState => ({
-        userReviews: [...prevState.userReviews, newReviewData]
-      }));
+      if (newReviewData !== false) {
+        this.setState(prevState => ({
+          userReviews: [...prevState.userReviews, newReviewData]
+        }));
+      }
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
     // only update if the data has changed
-    // update check on restaurant list:
     if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
       this.setState({
         currentRestaurantList: this.props.getVisibleRestaurants
@@ -98,7 +99,7 @@ class RestaurantSidebar extends Component {
         <AddReviewForm
           place_id={this.state.activeRestaurant.place_id}
           requestSetIsReviewFormOpen={this.receiveActiveReviewFormRequest}
-          newRewievData={this.handleNewReviewData}
+          newReviewData={this.handleNewReviewData}
         />
       </div>
     );

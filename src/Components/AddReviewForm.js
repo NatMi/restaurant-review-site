@@ -35,7 +35,7 @@ class AddReviewForm extends Component {
         text: this.state.reviewText
       }
     };
-    this.props.newRewievData(newReview);
+    this.props.newReviewData(newReview);
 
     this.resetForm();
   };
