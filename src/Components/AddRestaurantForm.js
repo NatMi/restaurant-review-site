@@ -46,11 +46,8 @@ class AddRestaurantForm extends Component {
   }
 
   clearFormData() {
-    this.setState({}, () => {
-      this.props.getMarkerData(null);
-      this.props.getMarkerData(null);
-      this.closeFormNoSave();
-    });
+    this.props.getMarkerData(null);
+    this.closeFormNoSave();
   }
 
   handleSubmit = event => {
@@ -65,8 +62,8 @@ class AddRestaurantForm extends Component {
           lng: this.props.getMarkerData.position.lng()
         }
       },
-      rating: null,
-      user_ratings_total: null,
+      rating: 0,
+      user_ratings_total: 0,
       reviews: []
     };
     this.props.newRestaurantData(newRestaurant);
