@@ -31,13 +31,11 @@ class RestaurantSidebar extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // only update if the data has changed
     if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
       this.setState({
         currentRestaurantList: this.props.getVisibleRestaurants
       });
     }
-    //update check on
     if (prevState.activeRestaurant !== this.state.activeRestaurant) {
       this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
     }
@@ -49,23 +47,24 @@ class RestaurantSidebar extends Component {
         activeRestaurant: this.props.receiveActiveStatusFromApp
       });
     }
+    // Checks if new reviews were loaded from App (for new active restaurant), or added by user from AddRestaurantForm. Updates list of reviews to render.
     if (
       prevState.userReviews !== this.state.userReviews ||
-      (prevProps.loadReviewsFromApp !== this.props.loadReviewsFromApp &&
-        this.props.loadReviewsFromApp !== [])
+      prevProps.loadReviewsFromApp !== this.props.loadReviewsFromApp
     ) {
-      // can I do this other way?
+      // if no reviews were returned from App (google api, undefined), set an empty array which can be iterated through if there are any reviews from user.
+      let checkReviewData = () => {
+        if (this.props.loadReviewsFromApp !== undefined) {
+          return this.props.loadReviewsFromApp;
+        } else {
+          return [];
+        }
+      };
       this.setState(
         {
-          loadAllReviews: []
+          loadAllReviews: checkReviewData()
         },
         () => {
-          this.props.loadReviewsFromApp.forEach(review => {
-            this.setState(prevState => ({
-              loadAllReviews: [...prevState.loadAllReviews, review]
-            }));
-          });
-
           this.state.userReviews.forEach(userReview => {
             if (userReview.place_id === this.state.activeRestaurant.place_id) {
               this.setState(prevState => ({
@@ -166,10 +165,7 @@ class RestaurantSidebar extends Component {
       this.state.isReviewFormActive !== false
     ) {
       return this.renderReviewForm();
-    } else if (
-      this.state.activeRestaurant !== false &&
-      this.props.loadReviewsFromApp !== undefined
-    ) {
+    } else if (this.state.activeRestaurant !== false) {
       return this.renderActive();
     } else if (
       this.state.activeRestaurant !== false &&
