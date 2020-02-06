@@ -9,17 +9,10 @@ class RestaurantItem extends Component {
       isReviewFormActive: false
     };
     this.requestReviewsForItem = () => {
-      this.setState(
-        {
-          isActive: true
-        },
-        () => {
-          this.props.requestForActiveStatusToSidebar(this.props.restaurant);
-        }
-      );
+      this.props.requestForActiveStatusToSidebar(this.props.restaurant);
     };
     this.requestNewReviewForm = () => {
-      this.setState({ isActive: true, isReviewFormActive: true }, () => {
+      this.setState({ isReviewFormActive: true }, () => {
         this.props.requestForActiveReviewForm(this.state.isReviewFormActive);
         this.props.requestForActiveStatusToSidebar(this.props.restaurant);
       });
