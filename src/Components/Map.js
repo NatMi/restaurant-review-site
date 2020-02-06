@@ -17,6 +17,11 @@ class Map extends Component {
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
     };
+    this.setMapOnMarkers = mapName => {
+      this.state.restaurantMarkerList.forEach(marker => {
+        marker.setMap(mapName);
+      });
+    };
     this.sendReviews = () => {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
     };
@@ -41,9 +46,7 @@ class Map extends Component {
     };
   }
   componentDidMount = () => {
-    this.geolocationApi(() => {
-      this.nearbySearch();
-    });
+    this.geolocationApi();
     this.drawGoogleMap();
     // load restaurants from json
     restaurantList.forEach(place => {
@@ -219,12 +222,6 @@ class Map extends Component {
       this.nearbySearch();
     }
   }
-
-  setMapOnMarkers = mapName => {
-    this.state.restaurantMarkerList.forEach(marker => {
-      marker.setMap(mapName);
-    });
-  };
 
   detailsRequest() {
     let handleJsonList = () => {
