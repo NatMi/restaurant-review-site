@@ -3,8 +3,7 @@
   flex-direction: column;
   justify-content: flex-start;
   color: white;
-  padding: 1rem;
-  margin-right: 2rem;
+  padding: 1rem 2rem;
   background-color: rgb(43, 43, 43);
 }
 
@@ -23,7 +22,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
 #filterCard h4 {
   padding: 0;
   margin: 0;

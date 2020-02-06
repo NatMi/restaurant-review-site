@@ -7,7 +7,7 @@
   display: flex;
   justify-content: space-between;
   background-color: #242225;
-  height: 75px;
+  height: fit-content;
 }
 
 .App-header {
@@ -18,6 +18,7 @@
   align-items: center;
 }
 .App-header h1 {
+  margin: 0;
   padding: 10px 0 0 10px;
   font-size: 2rem;
   font-weight: normal;
@@ -41,13 +42,13 @@ h4 {
   margin-bottom: 1rem;
 }
 .googleMap {
-  /*position: absolute;*/
   width: 100%;
   height: 100%;
 }
 #restaurantListArea {
   width: 35vw;
   height: 80vh;
+  transition: all 0.5s;
 }
 
 #main-footer {
@@ -77,5 +78,8 @@ h4 {
   }
   #restaurantListArea {
     width: 95vw;
+  }
+  #topBar {
+    flex-direction: column;
   }
 }

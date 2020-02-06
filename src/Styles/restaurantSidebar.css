@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Lato&display=swap");
+
 #restaurantList {
-  height: 80vh;
+  height: 85vh;
   overflow-y: auto;
 }
 #reviewList {
