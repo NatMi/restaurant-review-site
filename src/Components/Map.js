@@ -18,9 +18,6 @@ class Map extends Component {
       loadReviewsForActiveItem: [],
       showNewRestaurantForm: false
     };
-    this.sendData = () => {
-      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
-    };
     this.sendReviews = () => {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
     };
@@ -43,10 +40,6 @@ class Map extends Component {
         return new window.google.maps.places.PlacesService(this.state.map);
       };
     };
-
-    this.requestForActiveStatusFromMarker = this.requestForActiveStatusFromMarker.bind(
-      this
-    );
   }
 
   geolocationApi() {
@@ -71,7 +64,6 @@ class Map extends Component {
   }
   nearbySearch = () => {
     this.setMapOnMarkers(null);
-
     this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
     // GOOGLE PLACES API
     let searchBounds = {
@@ -85,44 +77,46 @@ class Map extends Component {
       });
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         results.forEach(place => {
-          //update state with each restaurant found
           this.setState(prevState => ({
             getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
           }));
         });
       }
 
-      // check if any restaurant from json file is contained within current google map bounds, if yes, add to state and create marker
+      // Check if any restaurant from json file is contained within current google map bounds. If yes, add to visible restaurants list.
       this.state.locallyStoredRestaurants.forEach(place => {
         if (this.state.map.getBounds().contains(place.geometry.location))
           this.setState(prevState => ({
             getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
           }));
       });
-      this.sendData();
+
+      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
 
       this.renderMarkers();
     };
-
+    // Call nearbySearch from google Places Service
     this.service().nearbySearch(searchBounds, handleSearchresults);
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      // check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green
+      // check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green and replace it with false value
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
+        this.setState({ activeMarker: false });
         this.nearbySearch();
+        // this.renderMarkers();
+        //-- works when clicked from marker, not from a sidebar
         // below is not needed when nearbySearch is performed, though it's not the best option(more requests to google api)
         // this.state.activeMarker.setIcon(
         //   "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
         // );
-        this.setState({ activeMarker: false });
       }
 
-      // set new state
+      // set new active restaurant and set active marker for it
       this.setState({ activeRestaurant: this.props.activeRestaurant });
       this.state.restaurantMarkerList.forEach(marker => {
         if (marker.place_id === this.props.activeRestaurant.place_id) {
@@ -131,7 +125,7 @@ class Map extends Component {
           });
         }
       });
-      // get details for new active restaurant
+      // Get details for new active restaurant
       if (this.props.activeRestaurant !== false) {
         this.detailsRequest();
       }
@@ -320,7 +314,7 @@ class Map extends Component {
       // --------> CLICK EVENT: restaurant marker <--------
       this.state.restaurantMarkerList.forEach(marker => {
         marker.addListener("click", () => {
-          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to green
+          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to blue
           if (
             this.state.activeMarker !== false &&
             this.state.activeRestaurant.place_id !== marker.place_id
@@ -329,7 +323,7 @@ class Map extends Component {
               "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
             );
           }
-          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to blue
+          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to green
           if (marker.place_id !== this.state.activeRestaurant.place_id) {
             this.setState({
               activeMarker: marker
