@@ -8,16 +8,16 @@ class RestaurantSidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentRestaurantList: [],
       activeRestaurant: false,
       loadAllReviews: [],
       userReviews: [],
       isReviewFormActive: false
     };
-    this.loadReviewsFromApp = false;
+    // receives information on which restaurant item was clicked
     this.receiveActiveStatusRequest = data => {
       this.setState({ activeRestaurant: data });
     };
+    // receives information on new review request
     this.receiveActiveReviewFormRequest = data => {
       this.setState({ isReviewFormActive: data });
     };
@@ -31,15 +31,12 @@ class RestaurantSidebar extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.getVisibleRestaurants !== this.props.getVisibleRestaurants) {
-      this.setState({
-        currentRestaurantList: this.props.getVisibleRestaurants
-      });
-    }
+    // When active restaurant changed on restaurantItem click, pass this information to App component.
     if (prevState.activeRestaurant !== this.state.activeRestaurant) {
       this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
     }
-    if (
+    // When active restaurant changed on map marker click, receive this information.
+    else if (
       prevProps.receiveActiveStatusFromApp !==
       this.props.receiveActiveStatusFromApp
     ) {
@@ -47,8 +44,8 @@ class RestaurantSidebar extends Component {
         activeRestaurant: this.props.receiveActiveStatusFromApp
       });
     }
-    // Checks if new reviews were loaded from App (for new active restaurant), or added by user from AddRestaurantForm. Updates list of reviews to render.
-    if (
+    // Checks if new reviews are loaded from App (for new active restaurant), or added by user from AddRestaurantForm. Updates list of reviews to render.
+    else if (
       prevState.userReviews !== this.state.userReviews ||
       prevProps.loadReviewsFromApp !== this.props.loadReviewsFromApp
     ) {
@@ -85,9 +82,9 @@ class RestaurantSidebar extends Component {
   };
   renderReviewForm() {
     return (
-      <div>
+      <div id="sidebar">
         <button className="btnBackToResults" onClick={this.handleBackToResults}>
-          Back to results
+          {"« Back to results"}
         </button>
         <RestaurantItem
           restaurant={this.state.activeRestaurant}
@@ -104,25 +101,9 @@ class RestaurantSidebar extends Component {
     );
   }
 
-  renderActiveNoReviews() {
-    return (
-      <div>
-        <button className="btnBackToResults" onClick={this.handleBackToResults}>
-          Back to results
-        </button>
-        <RestaurantItem
-          restaurant={this.state.activeRestaurant}
-          key={this.state.activeRestaurant.place_id}
-          requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
-          requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
-          isActive={true}
-        />
-      </div>
-    );
-  }
   renderActive() {
     return (
-      <div>
+      <div id="sidebar">
         <button className="btnBackToResults" onClick={this.handleBackToResults}>
           {"« Back to results"}
         </button>
@@ -133,12 +114,10 @@ class RestaurantSidebar extends Component {
           requestForActiveStatusToSidebar={this.receiveActiveStatusRequest}
           requestForActiveReviewForm={this.receiveActiveReviewFormRequest}
         />
-        <div id="reviewList">
-          <ItemReview
-            key={this.state.activeRestaurant.name}
-            loadReviews={this.state.loadAllReviews}
-          />
-        </div>
+        <ItemReview
+          key={this.state.activeRestaurant.name}
+          loadReviews={this.state.loadAllReviews}
+        />
       </div>
     );
   }
@@ -167,13 +146,12 @@ class RestaurantSidebar extends Component {
       this.state.isReviewFormActive !== false
     ) {
       return this.renderReviewForm();
-    } else if (this.state.activeRestaurant !== false) {
-      return this.renderActive();
     } else if (
-      this.state.activeRestaurant !== false &&
-      this.props.loadReviewsFromApp === undefined
+      this.state.activeRestaurant !== false ||
+      (this.state.activeRestaurant !== false &&
+        this.props.loadReviewsFromApp === undefined)
     ) {
-      return this.renderActiveNoReviews();
+      return this.renderActive();
     } else if (this.props.getVisibleRestaurants.length > 0) {
       return this.renderResults();
     } else {
@@ -181,12 +159,11 @@ class RestaurantSidebar extends Component {
         <div id="sidebar">
           <h3>No restaurants found in this area.</h3>
           <div id="sidebarInfo">
-            <h4>What you can do? </h4>
+            <h4>What you can do: </h4>
             <p>
               1. Add a new restaurant by right-clicking place on a map and
               submitting new restaurant details.
             </p>
-            <p></p>
             <p>2. Zoom out or move map to allow further search.</p>
           </div>
         </div>

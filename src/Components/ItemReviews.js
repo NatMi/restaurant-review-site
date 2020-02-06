@@ -5,7 +5,7 @@ class ItemReview extends Component {
   render() {
     if (this.props.loadReviews !== false) {
       return (
-        <div>
+        <div id="reviewList">
           {this.props.loadReviews.map(review => (
             <div
               className="restaurantReviewCard"
