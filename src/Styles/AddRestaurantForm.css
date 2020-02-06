@@ -1,8 +1,8 @@
-.display-block {
+.restaurantFormDisplayed {
   display: block;
 }
 
-.display-none {
+.restaurantFormDisabled {
   display: none;
 }
 

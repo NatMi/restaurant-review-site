@@ -91,9 +91,11 @@ class AddRestaurantForm extends Component {
     return (
       <div
         id="newRestaurantFormCard"
-        style={{
-          zIndex: this.props.isActive === true ? "1000" : "-1"
-        }}
+        className={
+          this.props.isActive === true
+            ? "restaurantFormDisplayed"
+            : "restaurantFormDisabled"
+        }
       >
         <h3>New restaurant form</h3>
         <form onSubmit={this.handleSubmit}>
