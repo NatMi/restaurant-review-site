@@ -22,7 +22,7 @@ class Map extends Component {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
     };
     this.drawGoogleMap = () => {
-      this.state.map = new window.google.maps.Map(
+      this.map = new window.google.maps.Map(
         document.getElementById(this.props.id),
         {
           center: this.state.usersPosition,
@@ -37,22 +37,26 @@ class Map extends Component {
         }
       );
       this.service = () => {
-        return new window.google.maps.places.PlacesService(this.state.map);
+        return new window.google.maps.places.PlacesService(this.map);
       };
     };
   }
 
   geolocationApi() {
-    // use position details from callback
+    // if geolocation object exist and user's position details are provided, update state
     let onPositionReceived = position => {
-      this.setState({
-        usersPosition: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
+      this.setState(
+        {
+          usersPosition: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        },
+        //centre google map object on user's position:
+        () => {
+          this.map.setCenter(this.state.usersPosition);
         }
-      });
-      //centre map component on user's position and update map bounds:
-      this.state.map.setCenter(this.state.usersPosition);
+      );
     };
 
     // TEST FOR GEOLOCATION
@@ -62,12 +66,13 @@ class Map extends Component {
       return <p>Geolocation unavailable.</p>;
     }
   }
+
   nearbySearch = () => {
     this.setMapOnMarkers(null);
     this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
     // GOOGLE PLACES API
     let searchBounds = {
-      bounds: this.state.map.getBounds(),
+      bounds: this.map.getBounds(),
       type: ["restaurant"]
     };
 
@@ -85,7 +90,7 @@ class Map extends Component {
 
       // Check if any restaurant from json file is contained within current google map bounds. If yes, add to visible restaurants list.
       this.state.locallyStoredRestaurants.forEach(place => {
-        if (this.state.map.getBounds().contains(place.geometry.location))
+        if (this.map.getBounds().contains(place.geometry.location))
           this.setState(prevState => ({
             getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
           }));
@@ -100,8 +105,12 @@ class Map extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    // 1. When user's position changed (i.e. geolocation API provided position details), search for restaurants based on new map bounds
+    if (prevState.usersPosition !== this.state.usersPosition) {
+      this.nearbySearch();
+    }
+    // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green and replace it with false value
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
-      // check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green and replace it with false value
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
@@ -184,17 +193,17 @@ class Map extends Component {
     });
 
     //MAP EVENT: "idle"
-    this.state.map.addListener("idle", () => {
+    this.map.addListener("idle", () => {
       this.setState({ activeRestaurant: false });
       this.nearbySearch();
     });
 
     // -------> MAP EVENT: New restaurant form on right click <---------
-    this.state.map.addListener("rightclick", event => {
+    this.map.addListener("rightclick", event => {
       if (this.state.showNewRestaurantForm === false) {
         let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
-          map: this.state.map,
+          map: this.map,
           title: "New restaurant",
           icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
         });
@@ -283,7 +292,7 @@ class Map extends Component {
     //user's location marker
     new window.google.maps.Marker({
       position: this.state.usersPosition,
-      map: this.state.map,
+      map: this.map,
       title: "Your current location"
     });
     //add restaurant markers
@@ -299,7 +308,7 @@ class Map extends Component {
       let restaurantMarker = new window.google.maps.Marker({
         place_id: restaurant.place_id,
         position: restaurant.geometry.location,
-        map: this.state.map,
+        map: this.map,
         title: restaurant.name,
         icon: markerColor(restaurant)
       });
