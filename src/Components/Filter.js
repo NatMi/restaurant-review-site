@@ -15,7 +15,7 @@ class Filter extends Component {
   //  Filters visible restaurant list as soon as they are loaded from app component (default filter settings show all results).
   componentDidUpdate(prevProps) {
     if (this.props.restaurantsToFilter !== prevProps.restaurantsToFilter) {
-      this.filterRestaurants();
+      this.props.filteredRestaurantList(this.props.restaurantsToFilter);
     }
   }
 
