@@ -40,6 +40,50 @@ class Map extends Component {
       };
     };
   }
+  componentDidMount = () => {
+    this.geolocationApi(() => {
+      this.nearbySearch();
+    });
+    this.drawGoogleMap();
+    // load restaurants from json
+    restaurantList.forEach(place => {
+      this.setState(prevState => ({
+        locallyStoredRestaurants: [...prevState.locallyStoredRestaurants, place]
+      }));
+    });
+
+    //MAP EVENT: "idle"
+    this.map.addListener("idle", () => {
+      this.setState({ activeRestaurant: false });
+      this.nearbySearch();
+    });
+
+    // -------> MAP EVENT: New restaurant form on right click <---------
+    this.map.addListener("rightclick", event => {
+      if (this.props.isNewRestaurantFormActive === false) {
+        let newRestaurant = new window.google.maps.Marker({
+          position: event.latLng,
+          map: this.map,
+          title: "New restaurant",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+
+        this.setState(
+          prevState => ({
+            activeMarker: newRestaurant,
+            restaurantMarkerList: [
+              ...prevState.restaurantMarkerList,
+              newRestaurant
+            ]
+          }),
+          () => {
+            this.props.showNewRestaurantForm(true);
+            this.props.newRestaurantMarker(newRestaurant);
+          }
+        );
+      }
+    });
+  };
 
   geolocationApi() {
     // if geolocation object exist and user's position details are provided, update state
@@ -69,7 +113,8 @@ class Map extends Component {
   nearbySearch = () => {
     this.setMapOnMarkers(null);
     this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
-    // GOOGLE PLACES API
+
+    // Set search bounds and callback to deal with nearbySearch results.
     let searchBounds = {
       bounds: this.map.getBounds(),
       type: ["restaurant"]
@@ -99,6 +144,7 @@ class Map extends Component {
 
       this.renderMarkers();
     };
+
     // Call nearbySearch from google Places Service
     this.service().nearbySearch(searchBounds, handleSearchresults);
   };
@@ -173,51 +219,6 @@ class Map extends Component {
       this.nearbySearch();
     }
   }
-
-  componentDidMount = () => {
-    this.geolocationApi(() => {
-      this.nearbySearch();
-    });
-    this.drawGoogleMap();
-    // load restaurants from json
-    restaurantList.forEach(place => {
-      this.setState(prevState => ({
-        locallyStoredRestaurants: [...prevState.locallyStoredRestaurants, place]
-      }));
-    });
-
-    //MAP EVENT: "idle"
-    this.map.addListener("idle", () => {
-      this.setState({ activeRestaurant: false });
-      this.nearbySearch();
-    });
-
-    // -------> MAP EVENT: New restaurant form on right click <---------
-    this.map.addListener("rightclick", event => {
-      if (this.props.isNewRestaurantFormActive === false) {
-        let newRestaurant = new window.google.maps.Marker({
-          position: event.latLng,
-          map: this.map,
-          title: "New restaurant",
-          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-        });
-
-        this.setState(
-          prevState => ({
-            activeMarker: newRestaurant,
-            restaurantMarkerList: [
-              ...prevState.restaurantMarkerList,
-              newRestaurant
-            ]
-          }),
-          () => {
-            this.props.showNewRestaurantForm(true);
-            this.props.newRestaurantMarker(newRestaurant);
-          }
-        );
-      }
-    });
-  };
 
   setMapOnMarkers = mapName => {
     this.state.restaurantMarkerList.forEach(marker => {
