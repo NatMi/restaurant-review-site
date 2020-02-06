@@ -15,8 +15,7 @@ class Map extends Component {
       getVisibleRestaurants: [],
       locallyStoredRestaurants: [],
       restaurantMarkerList: [],
-      loadReviewsForActiveItem: [],
-      showNewRestaurantForm: false
+      loadReviewsForActiveItem: []
     };
     this.sendReviews = () => {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
@@ -139,6 +138,7 @@ class Map extends Component {
         this.detailsRequest();
       }
     }
+    //3. If active marker changed (on sidebar request), and it is not false, update marker pin to active
     if (
       prevState.activeMarker !== this.state.activeMarker &&
       this.state.activeMarker !== false
@@ -147,6 +147,7 @@ class Map extends Component {
         "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
       );
     }
+    //4. If user added a new restaurant, add it to the locally stored restaurants array
     if (
       prevProps.restaurantsAddedByUser !== this.props.restaurantsAddedByUser &&
       this.props.restaurantsAddedByUser !== false
@@ -163,20 +164,13 @@ class Map extends Component {
         }
       );
     }
+    // 5.
     if (
       prevProps.isNewRestaurantFormActive !==
-      this.props.isNewRestaurantFormActive
+        this.props.isNewRestaurantFormActive &&
+      this.props.isNewRestaurantFormActive === false
     ) {
-      this.setState(
-        {
-          showNewRestaurantForm: this.props.isNewRestaurantFormActive
-        },
-        () => {
-          if (this.state.showNewRestaurantForm === false) {
-            this.nearbySearch();
-          }
-        }
-      );
+      this.nearbySearch();
     }
   }
 
@@ -200,7 +194,7 @@ class Map extends Component {
 
     // -------> MAP EVENT: New restaurant form on right click <---------
     this.map.addListener("rightclick", event => {
-      if (this.state.showNewRestaurantForm === false) {
+      if (this.props.isNewRestaurantFormActive === false) {
         let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
           map: this.map,
@@ -210,7 +204,6 @@ class Map extends Component {
 
         this.setState(
           prevState => ({
-            showNewRestaurantForm: true,
             activeMarker: newRestaurant,
             restaurantMarkerList: [
               ...prevState.restaurantMarkerList,
@@ -218,7 +211,7 @@ class Map extends Component {
             ]
           }),
           () => {
-            this.props.showNewRestaurantForm(this.state.showNewRestaurantForm);
+            this.props.showNewRestaurantForm(true);
             this.props.newRestaurantMarker(newRestaurant);
           }
         );
