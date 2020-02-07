@@ -15,7 +15,7 @@ class Filter extends Component {
   //  Filters visible restaurant list as soon as they are loaded from app component (default filter settings show all results).
   componentDidUpdate(prevProps) {
     if (this.props.restaurantsToFilter !== prevProps.restaurantsToFilter) {
-      this.props.filteredRestaurantList(this.props.restaurantsToFilter);
+      this.filterRestaurants();
     }
   }
 
@@ -25,16 +25,21 @@ class Filter extends Component {
       //  2. Creates new array by filtering out restaurants matching filtering criteria.
       let filteredRestaurants = () => {
         return this.props.restaurantsToFilter.filter(
-          restaurants =>
-            restaurants.rating >= this.state.selectMinimumRating &&
-            restaurants.rating <= this.state.selectMaximumRating
+          restaurant =>
+            (restaurant.rating >= this.state.selectMinimumRating &&
+              restaurant.rating <= this.state.selectMaximumRating) ||
+            // some restaurants from google api don't have reviews, hence rating is undefined. Code below serves catching them as well:
+            (this.state.selectMinimumRating == 0
+              ? restaurant.rating === undefined
+              : null && restaurant.rating <= this.state.selectMaximumRating)
         );
       };
+
       //  3. Checks  filter values. If they are the same as default, "clear filter" button is not active.
       let checkClearFilter = () => {
         if (
-          this.state.selectMinimumRating === 0 &&
-          this.state.selectMaximumRating === 5
+          this.state.selectMinimumRating == 0 &&
+          this.state.selectMaximumRating == 5
         ) {
           return false;
         }
