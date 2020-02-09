@@ -48,6 +48,7 @@ class Map extends Component {
   componentDidMount = () => {
     this.geolocationApi();
     this.drawGoogleMap();
+
     // load restaurants from json
     restaurantList.forEach(place => {
       this.setState(prevState => ({
@@ -57,7 +58,6 @@ class Map extends Component {
 
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
-      this.setState({ activeRestaurant: false });
       this.nearbySearch();
     });
 
@@ -66,7 +66,7 @@ class Map extends Component {
       if (this.props.isNewRestaurantFormActive === false) {
         let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
-          map: this.map,
+          map: this.state.map,
           title: "New restaurant",
           icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
         });
@@ -100,7 +100,9 @@ class Map extends Component {
         },
         //centre google map object on user's position:
         () => {
-          this.state.map.setCenter(this.state.usersPosition);
+          this.state.map.setCenter(this.state.usersPosition, () => {
+            this.nearbySearch();
+          });
         }
       );
     };
@@ -115,7 +117,10 @@ class Map extends Component {
 
   nearbySearch = () => {
     this.setMapOnMarkers(null);
-    this.setState({ getVisibleRestaurants: [], restaurantMarkerList: [] });
+    this.setState({
+      getVisibleRestaurants: [],
+      restaurantMarkerList: []
+    });
 
     // Set search bounds and callback to deal with nearbySearch results.
     let searchBounds = {
@@ -153,11 +158,6 @@ class Map extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    // 1. When user's position changed (i.e. geolocation API provided position details), search for restaurants based on new map bounds
-    if (prevState.usersPosition !== this.state.usersPosition) {
-      this.nearbySearch();
-    }
-
     // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to not active and replace it with false value
     // this applies when user clicks "back to results"
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
