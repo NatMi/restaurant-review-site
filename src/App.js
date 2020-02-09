@@ -18,11 +18,11 @@ class App extends Component {
       restaurantsAddedByUser: [],
       restaurantMarkerList: [],
       activeRestaurant: [],
-      activeRestaurantReviews: [],
+      activeRestaurantRestaurants: [],
       isNewRestaurantFormActive: false,
       newRestaurantMarker: null
     };
-    this.getFilteredReviews = filteredData => {
+    this.getFilteredRestaurants = filteredData => {
       this.setState({
         filteredRestaurantList: filteredData
       });
@@ -83,7 +83,7 @@ class App extends Component {
             <Header />
             <Filter
               restaurantsToFilter={this.state.visibleRestaurants}
-              filteredRestaurantList={this.getFilteredReviews}
+              filteredRestaurantList={this.getFilteredRestaurants}
             />
           </section>
           <div className="App-main">
