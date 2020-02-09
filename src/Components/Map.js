@@ -157,20 +157,20 @@ class Map extends Component {
     if (prevState.usersPosition !== this.state.usersPosition) {
       this.nearbySearch();
     }
-    // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to green and replace it with false value
+
+    // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to not active and replace it with false value
+    // this applies when user clicks "back to results"
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
-        this.setState({ activeMarker: false });
-        this.nearbySearch();
-        // this.renderMarkers();
-        //-- works when clicked from marker, not from a sidebar
-        // below is not needed when nearbySearch is performed, though it's not the best option(more requests to google api)
-        // this.state.activeMarker.setIcon(
-        //   "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-        // );
+        this.state.activeMarker.setIcon(
+          "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+          () => {
+            this.setState({ activeMarker: false });
+          }
+        );
       }
 
       // set new active restaurant and set active marker for it
