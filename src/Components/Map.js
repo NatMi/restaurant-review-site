@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import restaurantList from "../Data/restaurantList.json";
+let activeRestaurantIcon =
+  "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+let defaultRestaurantIcon =
+  "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
 
 class Map extends Component {
   constructor(props) {
@@ -12,18 +16,23 @@ class Map extends Component {
         name: "Map: no active restaurant"
       },
       activeMarker: false,
-      getVisibleRestaurants: [],
+      getNearbySearchResults: [],
       locallyStoredRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
     };
-    this.setMapOnMarkers = mapName => {
-      this.state.restaurantMarkerList.forEach(marker => {
-        marker.setMap(mapName);
-      });
-    };
     this.sendReviews = () => {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
+    };
+    this.requestForActiveStatusFromMarker = requestedPlaceId => {
+      this.state.getNearbySearchResults.forEach(restaurant => {
+        if (restaurant.place_id === requestedPlaceId) {
+          this.setState({
+            activeRestaurant: restaurant
+          });
+          this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
+        }
+      });
     };
     this.drawGoogleMap = () => {
       this.state.map = new window.google.maps.Map(
@@ -38,8 +47,12 @@ class Map extends Component {
               stylers: [{ visibility: "off" }]
             }
           ]
+        },
+        () => {
+          this.props.mapObject(this.state.map);
         }
       );
+
       this.service = () => {
         return new window.google.maps.places.PlacesService(this.state.map);
       };
@@ -49,7 +62,7 @@ class Map extends Component {
     this.geolocationApi();
     this.drawGoogleMap();
 
-    // load restaurants from json
+    //Load restaurants from json
     restaurantList.forEach(place => {
       this.setState(prevState => ({
         locallyStoredRestaurants: [...prevState.locallyStoredRestaurants, place]
@@ -61,14 +74,14 @@ class Map extends Component {
       this.nearbySearch();
     });
 
-    // -------> MAP EVENT: New restaurant form on right click <---------
+    // MAP EVENT: "right click" show new restaurant form
     this.state.map.addListener("rightclick", event => {
       if (this.props.isNewRestaurantFormActive === false) {
         let newRestaurant = new window.google.maps.Marker({
           position: event.latLng,
           map: this.state.map,
           title: "New restaurant",
-          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          icon: defaultRestaurantIcon
         });
 
         this.setState(
@@ -111,14 +124,16 @@ class Map extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(onPositionReceived);
     } else {
-      return <p>Geolocation unavailable.</p>;
+      window.alert("Geolocation not available.");
     }
   }
 
   nearbySearch = () => {
-    this.setMapOnMarkers(null);
+    this.state.restaurantMarkerList.forEach(marker => {
+      marker.setMap(null);
+    });
     this.setState({
-      getVisibleRestaurants: [],
+      getNearbySearchResults: [],
       restaurantMarkerList: []
     });
 
@@ -130,12 +145,12 @@ class Map extends Component {
 
     let handleSearchresults = (results, status) => {
       this.setState({
-        getVisibleRestaurants: []
+        getNearbySearchResults: []
       });
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         results.forEach(place => {
           this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+            getNearbySearchResults: [...prevState.getNearbySearchResults, place]
           }));
         });
       }
@@ -144,11 +159,11 @@ class Map extends Component {
       this.state.locallyStoredRestaurants.forEach(place => {
         if (this.state.map.getBounds().contains(place.geometry.location))
           this.setState(prevState => ({
-            getVisibleRestaurants: [...prevState.getVisibleRestaurants, place]
+            getNearbySearchResults: [...prevState.getNearbySearchResults, place]
           }));
       });
 
-      this.props.sendRestaurantData(this.state.getVisibleRestaurants);
+      this.props.sendRestaurantData(this.state.getNearbySearchResults);
 
       this.renderMarkers();
     };
@@ -165,12 +180,9 @@ class Map extends Component {
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
-        this.state.activeMarker.setIcon(
-          "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-          () => {
-            this.setState({ activeMarker: false });
-          }
-        );
+        this.state.activeMarker.setIcon(defaultRestaurantIcon, () => {
+          this.setState({ activeMarker: false });
+        });
       }
 
       // set new active restaurant and set active marker for it
@@ -192,9 +204,7 @@ class Map extends Component {
       prevState.activeMarker !== this.state.activeMarker &&
       this.state.activeMarker !== false
     ) {
-      this.state.activeMarker.setIcon(
-        "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-      );
+      this.state.activeMarker.setIcon(activeRestaurantIcon);
     }
     //4. If user added a new restaurant, add it to the locally stored restaurants array
     if (
@@ -245,7 +255,7 @@ class Map extends Component {
       );
     };
 
-    /// Getting Places reviews for active restaurant
+    /// Getting Places reviews for the active restaurant
     let requestPlaceDetails = {
       placeId: this.props.activeRestaurant.place_id
     };
@@ -268,17 +278,6 @@ class Map extends Component {
     this.service().getDetails(requestPlaceDetails, handleDetailsResults);
   }
 
-  requestForActiveStatusFromMarker(requestedPlaceId) {
-    this.state.getVisibleRestaurants.forEach(restaurant => {
-      if (restaurant.place_id === requestedPlaceId) {
-        this.setState({
-          activeRestaurant: restaurant
-        });
-        this.props.requestForActiveStatusToApp(this.state.activeRestaurant);
-      }
-    });
-  }
-
   renderMarkers() {
     //user's location marker
     new window.google.maps.Marker({
@@ -289,13 +288,13 @@ class Map extends Component {
     //add restaurant markers
     let markerColor = restaurant => {
       if (restaurant.place_id === this.props.activeRestaurant.place_id) {
-        return "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+        return activeRestaurantIcon;
       } else {
-        return "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+        return defaultRestaurantIcon;
       }
     };
 
-    this.state.getVisibleRestaurants.forEach(restaurant => {
+    this.state.getNearbySearchResults.forEach(restaurant => {
       let restaurantMarker = new window.google.maps.Marker({
         place_id: restaurant.place_id,
         position: restaurant.geometry.location,
@@ -314,23 +313,19 @@ class Map extends Component {
       // --------> CLICK EVENT: restaurant marker <--------
       this.state.restaurantMarkerList.forEach(marker => {
         marker.addListener("click", () => {
-          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to blue
+          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
           if (
             this.state.activeMarker !== false &&
             this.state.activeRestaurant.place_id !== marker.place_id
           ) {
-            this.state.activeMarker.setIcon(
-              "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-            );
+            this.state.activeMarker.setIcon(defaultRestaurantIcon);
           }
-          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to green
+          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to active
           if (marker.place_id !== this.state.activeRestaurant.place_id) {
             this.setState({
               activeMarker: marker
             });
-            marker.setIcon(
-              "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-            );
+            marker.setIcon(activeRestaurantIcon);
             // 3. pass place_id of the clicked marker to App
             this.requestForActiveStatusFromMarker(marker.place_id);
           }
