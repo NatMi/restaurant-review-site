@@ -12,9 +12,7 @@ class Map extends Component {
       usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default, updated once user shares their location
       mapCenter: [],
       mapBounds: [],
-      activeRestaurant: {
-        name: "Map: no active restaurant"
-      },
+      activeRestaurant: {},
       activeMarker: false,
       getNearbySearchResults: [],
       locallyStoredRestaurants: [],
@@ -220,27 +218,6 @@ class Map extends Component {
   }
 
   detailsRequest() {
-    let handleJsonList = () => {
-      // if place_id was not recognised, check json:
-      let filterLocallyStoredRestaurants = () => {
-        let results = this.state.locallyStoredRestaurants.filter(
-          restaurant =>
-            restaurant.place_id === this.props.activeRestaurant.place_id
-        );
-        return results[0];
-        //reurns array with objects
-      };
-
-      this.setState(
-        {
-          loadReviewsForActiveItem: filterLocallyStoredRestaurants()
-        },
-        () => {
-          this.sendReviews();
-        }
-      );
-    };
-
     /// Getting Places reviews for the active restaurant
     let requestPlaceDetails = {
       placeId: this.props.activeRestaurant.place_id
@@ -257,7 +234,23 @@ class Map extends Component {
           }
         );
       } else {
-        handleJsonList();
+        // if place_id was not recognised, check json:
+        let filterLocallyStoredRestaurants = () => {
+          let results = this.state.locallyStoredRestaurants.filter(
+            restaurant =>
+              restaurant.place_id === this.props.activeRestaurant.place_id
+          );
+          return results[0];
+        };
+
+        this.setState(
+          {
+            loadReviewsForActiveItem: filterLocallyStoredRestaurants()
+          },
+          () => {
+            this.sendReviews();
+          }
+        );
       }
     };
 
@@ -307,7 +300,6 @@ class Map extends Component {
           // --------> CLICK EVENT: restaurant marker <--------
           this.state.restaurantMarkerList.forEach(marker => {
             marker.addListener("click", () => {
-              console.log("click");
               // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
               if (
                 this.state.activeMarker !== false &&
