@@ -63,7 +63,7 @@ class RestaurantItem extends Component {
           <img
             alt={this.props.restaurant.name}
             className="streetViewImg"
-            // src={this.streetViewUrl()}
+            src={this.streetViewUrl()}
           ></img>
         </div>
         <div className="restaurantCardInfo">
