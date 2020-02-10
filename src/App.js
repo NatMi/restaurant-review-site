@@ -4,6 +4,7 @@ import Header from "./Components/Header.js";
 import Filter from "./Components/Filter.js";
 import Footer from "./Components/Footer.js";
 import Map from "./Components/Map.js";
+import restaurantList from "./Data/restaurantList.json";
 import RestaurantSidebar from "./Components/RestaurantSidebar.js";
 import AddRestaurantForm from "./Components/AddRestaurantForm.js";
 import googleMapsKey from "./Data/googleMapsKey.json";
@@ -13,10 +14,10 @@ class App extends Component {
     super(props);
     this.state = {
       googleMapsLoaded: false,
+      locallyStoredRestaurants: [],
       nearbySearchRestaurants: [],
       filteredRestaurantList: [],
       restaurantsAddedByUser: [],
-      restaurantMarkerList: [],
       activeRestaurant: [],
       activeRestaurantReviews: [],
       isNewRestaurantFormActive: false,
@@ -37,12 +38,17 @@ class App extends Component {
       }
     };
     this.handleNewRestaurantData = formData => {
-      this.setState({
-        restaurantsAddedByUser: formData
-      });
+      if (formData !== false) {
+        this.setState(prevState => ({
+          locallyStoredRestaurants: [
+            ...prevState.locallyStoredRestaurants,
+            formData
+          ]
+        }));
+      }
     };
     this.passNewRestaurantMarkerData = mapData => {
-      this.setState({ newRestaurantMarker: mapData }, () => {});
+      this.setState({ newRestaurantMarker: mapData });
     };
     this.getReviewsForActiveItem = reviewsData => {
       this.setState({ activeRestaurantReviews: reviewsData });
@@ -57,6 +63,8 @@ class App extends Component {
   };
 
   componentDidMount = () => {
+    this.setState({ locallyStoredRestaurants: restaurantList });
+
     if (!window.google) {
       const script = document.createElement("script");
       script.src =
@@ -98,7 +106,8 @@ class App extends Component {
                 id="googleMap"
                 restaurantsToShow={this.state.filteredRestaurantList}
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
-                sendRestaurantData={this.getNearbySearchData}
+                locallyStoredRestaurants={this.state.locallyStoredRestaurants}
+                sendNearbySearchData={this.getNearbySearchData}
                 activeRestaurant={this.state.activeRestaurant}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 sendReviewsForActiveItem={this.getReviewsForActiveItem}

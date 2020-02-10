@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import restaurantList from "../Data/restaurantList.json";
 let activeRestaurantIcon =
   "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
 let defaultRestaurantIcon =
@@ -15,7 +14,6 @@ class Map extends Component {
       activeRestaurant: {},
       activeMarker: false,
       getNearbySearchResults: [],
-      locallyStoredRestaurants: [],
       restaurantMarkerList: [],
       loadReviewsForActiveItem: []
     };
@@ -59,13 +57,6 @@ class Map extends Component {
   componentDidMount = () => {
     this.geolocationApi();
     this.drawGoogleMap();
-
-    //Load restaurants from json
-    restaurantList.forEach(place => {
-      this.setState(prevState => ({
-        locallyStoredRestaurants: [...prevState.locallyStoredRestaurants, place]
-      }));
-    });
 
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
@@ -139,7 +130,7 @@ class Map extends Component {
         handleAllRestaurants = results;
       }
       // Check if any locally stored restaurant is contained within current google map bounds. If yes, add to visible restaurants list.
-      this.state.locallyStoredRestaurants.forEach(place => {
+      this.props.locallyStoredRestaurants.forEach(place => {
         if (this.state.map.getBounds().contains(place.geometry.location))
           handleAllRestaurants.push(place);
       });
@@ -147,7 +138,7 @@ class Map extends Component {
         getNearbySearchResults: handleAllRestaurants
       });
 
-      this.props.sendRestaurantData(this.state.getNearbySearchResults);
+      this.props.sendNearbySearchData(this.state.getNearbySearchResults);
     };
     // Call nearbySearch from google Places Service
     this.service().nearbySearch(searchBounds, handleSearchresults);
@@ -192,28 +183,17 @@ class Map extends Component {
     }
     //4. If user added a new restaurant, add it to the locally stored restaurants array
     if (
-      prevProps.restaurantsAddedByUser !== this.props.restaurantsAddedByUser &&
-      this.props.restaurantsAddedByUser !== false
+      this.props.locallyStoredRestaurants !== prevProps.locallyStoredRestaurants
     ) {
-      this.setState(
-        prevState => ({
-          locallyStoredRestaurants: [
-            ...prevState.locallyStoredRestaurants,
-            this.props.restaurantsAddedByUser
-          ]
-        }),
-        () => {
-          this.nearbySearch();
-        }
-      );
+      this.nearbySearch();
     }
-    // 5.
+    // 5. Re-render markers when new restaurant form closes
     if (
       prevProps.isNewRestaurantFormActive !==
         this.props.isNewRestaurantFormActive &&
       this.props.isNewRestaurantFormActive === false
     ) {
-      this.nearbySearch();
+      this.renderMarkers();
     }
   }
 
@@ -236,7 +216,7 @@ class Map extends Component {
       } else {
         // if place_id was not recognised, check json:
         let filterLocallyStoredRestaurants = () => {
-          let results = this.state.locallyStoredRestaurants.filter(
+          let results = this.props.locallyStoredRestaurants.filter(
             restaurant =>
               restaurant.place_id === this.props.activeRestaurant.place_id
           );
