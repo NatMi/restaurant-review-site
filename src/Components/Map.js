@@ -73,6 +73,21 @@ class Map extends Component {
           icon: defaultRestaurantIcon
         });
 
+        if (this.state.activeMarker !== false) {
+          this.state.activeMarker.setIcon(defaultRestaurantIcon);
+          this.setState(
+            {
+              activeRestaurant: false,
+              loadReviewsForActiveItem: false
+            },
+            () => {
+              this.props.requestForActiveStatusToApp(
+                this.state.activeRestaurant
+              );
+            }
+          );
+        }
+
         this.setState(
           prevState => ({
             activeMarker: newRestaurant,
@@ -184,19 +199,13 @@ class Map extends Component {
     ) {
       this.state.activeMarker.setIcon(activeRestaurantIcon);
     }
-    //4. If user added a new restaurant, add it to the locally stored restaurants array
-    if (
-      this.props.locallyStoredRestaurants !== prevProps.locallyStoredRestaurants
-    ) {
-      this.nearbySearch();
-    }
-    // 5. Re-render markers when new restaurant form closes
+    // Re-render markers when new restaurant form closes
     if (
       prevProps.isNewRestaurantFormActive !==
         this.props.isNewRestaurantFormActive &&
       this.props.isNewRestaurantFormActive === false
     ) {
-      this.renderMarkers();
+      this.nearbySearch();
     }
   }
 
