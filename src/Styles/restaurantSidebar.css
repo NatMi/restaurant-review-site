@@ -123,6 +123,14 @@ h4 {
 .btnAddRestaurantReviews:hover {
   box-shadow: none;
 }
+.btnActive {
+  opacity: 1;
+  pointer-events: all;
+}
+.btnDisabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
 
 @media only screen and (max-width: 600px) {
   .restaurantCard {

@@ -13,8 +13,8 @@ class RestaurantItem extends Component {
     };
     this.requestNewReviewForm = () => {
       this.setState({ isReviewFormActive: true }, () => {
-        this.props.requestForActiveReviewForm(this.state.isReviewFormActive);
         this.props.requestForActiveStatusToSidebar(this.props.restaurant);
+        this.props.requestForActiveReviewForm(this.state.isReviewFormActive);
       });
     };
   }
@@ -71,17 +71,21 @@ class RestaurantItem extends Component {
           <p className="restaurantAddress">{this.props.restaurant.vicinity}</p>
           <div className="restaurantBtnContainer">
             <button
-              style={{
-                opacity: this.props.isActive === false ? 1 : 0.3,
-                pointerEvents: this.props.isActive === false ? "auto" : "none"
-              }}
-              className="btnRestaurantReviews"
+              className={
+                this.props.isActive
+                  ? "btnRestaurantReviews btnDisabled"
+                  : "btnRestaurantReviews btnActive"
+              }
               onClick={this.requestReviewsForItem}
             >
               Read reviews
             </button>
             <button
-              className="btnAddRestaurantReviews"
+              className={
+                this.state.isReviewFormActive
+                  ? "btnAddRestaurantReviews btnDisabled"
+                  : "btnAddRestaurantReviews btnActive"
+              }
               onClick={this.requestNewReviewForm}
             >
               Add review
