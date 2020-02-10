@@ -300,14 +300,9 @@ class Map extends Component {
         if (
           restaurantMarker.place_id !== this.state.activeRestaurant.place_id
         ) {
-          this.setState(
-            {
-              activeMarker: restaurantMarker
-            },
-            () => {
-              this.state.activeMarker.getZIndex(100000);
-            }
-          );
+          this.setState({
+            activeMarker: restaurantMarker
+          });
           restaurantMarker.setIcon(activeRestaurantIcon);
           // 3. pass place_id of the clicked marker to App
           this.requestForActiveStatusFromMarker(restaurantMarker.place_id);
