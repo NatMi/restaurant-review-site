@@ -8,7 +8,7 @@ class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default, updated once user shares their location
+      usersPosition: { lat: 51.509865, lng: -0.118092 }, // London coordinates by default
       mapCenter: [],
       mapBounds: [],
       activeRestaurant: {},
@@ -63,7 +63,7 @@ class Map extends Component {
       this.nearbySearch();
     });
 
-    // MAP EVENT: "right click" show new restaurant form
+    // MAP EVENT: "right click" on map shows new restaurant form and creates temporary marker
     this.state.map.addListener("rightclick", event => {
       if (this.props.isNewRestaurantFormActive === false) {
         let newRestaurant = new window.google.maps.Marker({
@@ -145,36 +145,39 @@ class Map extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    // --> Filtered results change:
     if (prevProps.restaurantsToShow !== this.props.restaurantsToShow) {
       this.renderMarkers();
     }
-    // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to not active and replace it with false value
-    // this applies when user clicks "back to results"
+    /* --> Sidebar active restaurant status change:
+    Check if activeRestaurant and prev activeMarker are true. If new activeRestaurant is false, set prev activeMarker's icon to inactive and set it to false*/
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
-        this.state.activeMarker.setIcon(defaultRestaurantIcon, () => {
-          this.setState({ activeMarker: false });
+        this.state.activeMarker.setIcon(defaultRestaurantIcon);
+        this.setState({
+          activeMarker: false
         });
       }
-
-      // set new active restaurant and set active marker for it
-      this.setState({ activeRestaurant: this.props.activeRestaurant });
-      this.state.restaurantMarkerList.forEach(marker => {
-        if (marker.place_id === this.props.activeRestaurant.place_id) {
-          this.setState({
-            activeMarker: marker
-          });
-        }
+      // Otherwise set new active restaurant and corresponding active marker for it if exists
+      this.setState({ activeRestaurant: this.props.activeRestaurant }, () => {
+        this.state.restaurantMarkerList.forEach(marker => {
+          if (marker.place_id === this.props.activeRestaurant.place_id) {
+            this.setState({
+              activeMarker: marker
+            });
+          }
+        });
       });
+
       // Get details for new active restaurant
       if (this.props.activeRestaurant !== false) {
         this.detailsRequest();
       }
     }
-    //3. If active marker changed (on sidebar request), and it is not false, update marker pin to active
+    // --> If active marker changed (on sidebar request), and it is not false, update marker pin to active
     if (
       prevState.activeMarker !== this.state.activeMarker &&
       this.state.activeMarker !== false
@@ -251,14 +254,6 @@ class Map extends Component {
       map: this.state.map,
       title: "Your current location"
     });
-    //add restaurant markers
-    let markerColor = restaurant => {
-      if (restaurant.place_id === this.props.activeRestaurant.place_id) {
-        return activeRestaurantIcon;
-      } else {
-        return defaultRestaurantIcon;
-      }
-    };
 
     this.props.restaurantsToShow.forEach(restaurant => {
       let restaurantMarker = new window.google.maps.Marker({
@@ -266,40 +261,39 @@ class Map extends Component {
         position: restaurant.geometry.location,
         map: this.state.map,
         title: restaurant.name,
-        icon: markerColor(restaurant)
+        icon:
+          restaurant.place_id === this.props.activeRestaurant.place_id
+            ? activeRestaurantIcon
+            : defaultRestaurantIcon
+      });
+
+      restaurantMarker.addListener("click", () => {
+        // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
+        if (
+          this.state.activeMarker !== false &&
+          this.state.activeRestaurant.place_id !== restaurantMarker.place_id
+        ) {
+          this.state.activeMarker.setIcon(defaultRestaurantIcon);
+        }
+        // 2. If the marker which was clicked is not set as active yet, update state and change its icon to active
+        if (
+          restaurantMarker.place_id !== this.state.activeRestaurant.place_id
+        ) {
+          this.setState({
+            activeMarker: restaurantMarker
+          });
+          restaurantMarker.setIcon(activeRestaurantIcon);
+          // 3. pass place_id of the clicked marker to App
+          this.requestForActiveStatusFromMarker(restaurantMarker.place_id);
+        }
       });
       // update state with marker of new restaurant
-      this.setState(
-        prevState => ({
-          restaurantMarkerList: [
-            ...prevState.restaurantMarkerList,
-            restaurantMarker
-          ]
-        }),
-        () => {
-          // --------> CLICK EVENT: restaurant marker <--------
-          this.state.restaurantMarkerList.forEach(marker => {
-            marker.addListener("click", () => {
-              // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
-              if (
-                this.state.activeMarker !== false &&
-                this.state.activeRestaurant.place_id !== marker.place_id
-              ) {
-                this.state.activeMarker.setIcon(defaultRestaurantIcon);
-              }
-              // 2. If the marker which was clicked is not set as active yet, update state and change its icon to active
-              if (marker.place_id !== this.state.activeRestaurant.place_id) {
-                this.setState({
-                  activeMarker: marker
-                });
-                marker.setIcon(activeRestaurantIcon);
-                // 3. pass place_id of the clicked marker to App
-                this.requestForActiveStatusFromMarker(marker.place_id);
-              }
-            });
-          });
-        }
-      );
+      this.setState(prevState => ({
+        restaurantMarkerList: [
+          ...prevState.restaurantMarkerList,
+          restaurantMarker
+        ]
+      }));
     });
   }
 

@@ -31,6 +31,9 @@ class App extends Component {
     this.getNearbySearchData = mapData => {
       this.setState({ nearbySearchRestaurants: mapData });
     };
+    this.passNewRestaurantMarkerData = mapData => {
+      this.setState({ newRestaurantMarker: mapData });
+    };
     this.openNewRestaurantForm = data => {
       this.setState({ isNewRestaurantFormActive: data });
       if (data === false) {
@@ -46,9 +49,6 @@ class App extends Component {
           ]
         }));
       }
-    };
-    this.passNewRestaurantMarkerData = mapData => {
-      this.setState({ newRestaurantMarker: mapData });
     };
     this.getReviewsForActiveItem = reviewsData => {
       this.setState({ activeRestaurantReviews: reviewsData });
