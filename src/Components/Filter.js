@@ -18,6 +18,9 @@ class Filter extends Component {
       this.filterRestaurants();
     }
   }
+  componentDidMount() {
+    this.filterRestaurants();
+  }
 
   filterRestaurants = () => {
     //  1. Checks if filter values are set correcltly. If not, error message is shown.
@@ -28,7 +31,7 @@ class Filter extends Component {
           restaurant =>
             (restaurant.rating >= this.state.selectMinimumRating &&
               restaurant.rating <= this.state.selectMaximumRating) ||
-            // some restaurants from google api don't have reviews, hence rating is undefined. Code below serves catching them as well:
+            // some restaurants from google api don't have reviews, hence rating returns undefined. Code below serves catching them as well:
             (this.state.selectMinimumRating == 0
               ? restaurant.rating === undefined
               : null && restaurant.rating <= this.state.selectMaximumRating)
