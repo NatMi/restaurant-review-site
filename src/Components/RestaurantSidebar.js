@@ -41,8 +41,7 @@ class RestaurantSidebar extends Component {
       this.props.receiveActiveStatusFromApp
     ) {
       this.setState({
-        activeRestaurant: this.props.receiveActiveStatusFromApp,
-        isReviewFormActive: false
+        activeRestaurant: this.props.receiveActiveStatusFromApp
       });
     }
     // Checks if new reviews are loaded from App (for new active restaurant), or added by user from AddRestaurantForm. Updates list of reviews to render.
