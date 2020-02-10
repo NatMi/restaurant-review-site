@@ -158,14 +158,15 @@ class RestaurantSidebar extends Component {
     } else {
       return (
         <div id="sidebar">
-          <h3>No restaurants found in this area.</h3>
+          <h3>No restaurants with matching criteria were found.</h3>
           <div id="sidebarInfo">
             <h4>What you can do: </h4>
             <p>
               1. Add a new restaurant by right-clicking place on a map and
               submitting new restaurant details.
             </p>
-            <p>2. Zoom out or move map to allow further search.</p>
+            <p>2. Zoom out or move map to allow broader search.</p>
+            <p>3. Modify filter criteria.</p>
           </div>
         </div>
       );

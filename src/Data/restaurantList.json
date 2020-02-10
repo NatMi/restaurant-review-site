@@ -24,6 +24,17 @@
       }
     ]
   },
+  {
+    "place_id": "ChIJ0y4LuBrHh0gRRnd6u8m6HSQ55.92649164787876",
+    "name": "Unnamed Road Cafe",
+    "vicinity": "Unnamed Road, Edinburgh EH10 5TX, UK",
+    "geometry": {
+      "location": { "lat": 55.92649164787876, "lng": -3.2203718158626904 }
+    },
+    "rating": 0,
+    "user_ratings_total": 0,
+    "reviews": []
+  },
 
   {
     "place_id": "myplace2",
