@@ -116,20 +116,16 @@ class Map extends Component {
       this.renderMarkers();
     }
     /* --> Sidebar active restaurant status change:
-    Check if activeRestaurant and prev activeMarker are true. If new activeRestaurant is false, set activeMarker to false and re-render*/
+    Check if activeRestaurant and prev activeMarker are true. If new activeRestaurant is false, set prev activeMarker's icon to inactive and set it to false*/
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
       if (
         this.props.activeRestaurant === false &&
         this.state.activeMarker !== false
       ) {
-        this.setState(
-          {
-            activeMarker: false
-          },
-          () => {
-            this.renderMarkers();
-          }
-        );
+        this.state.activeMarker.setIcon(defaultRestaurantIcon);
+        this.setState({
+          activeMarker: false
+        });
       }
       // Otherwise set new active restaurant and corresponding active marker for it if exists
       this.setState({ activeRestaurant: this.props.activeRestaurant }, () => {
