@@ -18,7 +18,7 @@ class App extends Component {
       restaurantsAddedByUser: [],
       restaurantMarkerList: [],
       activeRestaurant: [],
-      activeRestaurantRestaurants: [],
+      activeRestaurantReviews: [],
       isNewRestaurantFormActive: false,
       newRestaurantMarker: null
     };
