@@ -153,7 +153,6 @@ class Map extends Component {
       this.state.activeMarker !== false
     ) {
       this.state.activeMarker.setIcon(activeRestaurantIcon);
-      this.state.activeMarker.setZIndex(100000);
     }
     // Re-render markers when new restaurant form closes
     if (
@@ -281,11 +280,7 @@ class Map extends Component {
         icon:
           restaurant.place_id === this.props.activeRestaurant.place_id
             ? activeRestaurantIcon
-            : defaultRestaurantIcon,
-        getZIndex:
-          restaurant.place_id === this.props.activeRestaurant.place_id
-            ? 1000
-            : 0
+            : defaultRestaurantIcon
       });
 
       restaurantMarker.addListener("click", () => {
