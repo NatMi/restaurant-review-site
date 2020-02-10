@@ -124,9 +124,9 @@ class RestaurantSidebar extends Component {
   renderResults() {
     return (
       <div id="sidebar">
-        <h3>Restaurants found: {this.props.getVisibleRestaurants.length}</h3>
+        <h3>Restaurants found: {this.props.getFilteredRestaurants.length}</h3>
         <div id="restaurantList">
-          {this.props.getVisibleRestaurants.map(restaurant => (
+          {this.props.getFilteredRestaurants.map(restaurant => (
             <RestaurantItem
               restaurant={restaurant}
               isActive={false}
@@ -152,7 +152,7 @@ class RestaurantSidebar extends Component {
         this.props.loadReviewsFromApp === undefined)
     ) {
       return this.renderActive();
-    } else if (this.props.getVisibleRestaurants.length > 0) {
+    } else if (this.props.getFilteredRestaurants.length > 0) {
       return this.renderResults();
     } else {
       return (

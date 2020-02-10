@@ -13,7 +13,7 @@ class App extends Component {
     super(props);
     this.state = {
       googleMapsLoaded: false,
-      visibleRestaurants: [],
+      nearbySearchRestaurants: [],
       filteredRestaurantList: [],
       restaurantsAddedByUser: [],
       restaurantMarkerList: [],
@@ -27,8 +27,8 @@ class App extends Component {
         filteredRestaurantList: filteredData
       });
     };
-    this.getRestaurantData = mapData => {
-      this.setState({ visibleRestaurants: mapData });
+    this.getNearbySearchData = mapData => {
+      this.setState({ nearbySearchRestaurants: mapData });
     };
     this.openNewRestaurantForm = data => {
       this.setState({ isNewRestaurantFormActive: data });
@@ -82,7 +82,7 @@ class App extends Component {
           <section id="topBar">
             <Header />
             <Filter
-              restaurantsToFilter={this.state.visibleRestaurants}
+              restaurantsToFilter={this.state.nearbySearchRestaurants}
               filteredRestaurantList={this.getFilteredRestaurants}
             />
           </section>
@@ -97,7 +97,7 @@ class App extends Component {
               <Map
                 id="googleMap"
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
-                sendRestaurantData={this.getRestaurantData}
+                sendRestaurantData={this.getNearbySearchData}
                 activeRestaurant={this.state.activeRestaurant}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 sendReviewsForActiveItem={this.getReviewsForActiveItem}
@@ -111,7 +111,7 @@ class App extends Component {
             </section>
             <section id="restaurantListArea">
               <RestaurantSidebar
-                getVisibleRestaurants={this.state.filteredRestaurantList}
+                getFilteredRestaurants={this.state.filteredRestaurantList}
                 requestForActiveStatusToApp={this.receiveActiveStatusRequest}
                 receiveActiveStatusFromApp={this.state.activeRestaurant}
                 loadReviewsFromApp={this.state.activeRestaurantReviews.reviews}
