@@ -9,7 +9,7 @@ class ItemReview extends Component {
           {this.props.loadReviews.map(review => (
             <div
               className="restaurantReviewCard"
-              key={review.place_id + review.author_name}
+              key={review.time + review.author_name}
             >
               <div className="reviewHeader">
                 <div className="restaurantRating">{review.rating} ★</div>
