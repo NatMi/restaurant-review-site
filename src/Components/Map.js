@@ -30,7 +30,7 @@ class Map extends Component {
         }
       });
     };
-    this.drawGoogleMap = () => {
+    this.drawGoogleMap = callback => {
       this.state.map = new window.google.maps.Map(
         document.getElementById(this.props.id),
         {
@@ -55,15 +55,20 @@ class Map extends Component {
     };
   }
   componentDidMount = () => {
-    this.geolocationApi();
-    this.drawGoogleMap();
-
+    this.drawGoogleMap(this.geolocationApi());
     //MAP EVENT: "idle"
     this.state.map.addListener("idle", () => {
-      this.nearbySearch();
+      this.setState(
+        {
+          mapBounds: this.state.map.getBounds()
+        },
+        () => {
+          this.nearbySearch();
+        }
+      );
     });
 
-    // MAP EVENT: "right click" on map shows new restaurant form and creates temporary marker
+    // MAP EVENT: "right click" on map shows new restaurant form and creates temporary marker (which contains position data)
     this.state.map.addListener("rightclick", event => {
       if (this.props.isNewRestaurantFormActive === false) {
         let newRestaurant = new window.google.maps.Marker({
@@ -103,60 +108,6 @@ class Map extends Component {
         );
       }
     });
-  };
-
-  geolocationApi() {
-    // if geolocation object exist and user's position details are provided, update state
-    let onPositionReceived = position => {
-      this.setState(
-        {
-          usersPosition: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          }
-        },
-        //centre google map object on user's position:
-        () => {
-          this.state.map.setCenter(this.state.usersPosition, () => {
-            this.nearbySearch();
-          });
-        }
-      );
-    };
-
-    // TEST FOR GEOLOCATION
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(onPositionReceived);
-    } else {
-      window.alert("Geolocation not available.");
-    }
-  }
-
-  nearbySearch = () => {
-    // Set search bounds and callback to deal with nearbySearch results.
-    let searchBounds = {
-      bounds: this.state.map.getBounds(),
-      type: ["restaurant"]
-    };
-
-    let handleSearchresults = (results, status) => {
-      let handleAllRestaurants = [];
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        handleAllRestaurants = results;
-      }
-      // Check if any locally stored restaurant is contained within current google map bounds. If yes, add to visible restaurants list.
-      this.props.locallyStoredRestaurants.forEach(place => {
-        if (this.state.map.getBounds().contains(place.geometry.location))
-          handleAllRestaurants.push(place);
-      });
-      this.setState({
-        getNearbySearchResults: handleAllRestaurants
-      });
-
-      this.props.sendNearbySearchData(this.state.getNearbySearchResults);
-    };
-    // Call nearbySearch from google Places Service
-    this.service().nearbySearch(searchBounds, handleSearchresults);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -208,6 +159,58 @@ class Map extends Component {
       this.nearbySearch();
     }
   }
+
+  geolocationApi() {
+    // if geolocation object exist and user's position details are provided, update state
+    let onPositionReceived = position => {
+      this.setState(
+        {
+          usersPosition: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        },
+        //centre google map object on user's position:
+        () => {
+          this.state.map.setCenter(this.state.usersPosition);
+        }
+      );
+    };
+
+    // TEST FOR GEOLOCATION
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(onPositionReceived);
+    } else {
+      window.alert("Geolocation not available.");
+    }
+  }
+
+  nearbySearch = () => {
+    // Set search bounds and callback to deal with nearbySearch results.
+    let searchBounds = {
+      bounds: this.state.mapBounds,
+      type: ["restaurant"]
+    };
+
+    let handleSearchresults = (results, status) => {
+      let handleAllRestaurants = [];
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        handleAllRestaurants = results;
+      }
+      // Check if any locally stored restaurant is contained within current google map bounds. If yes, add to visible restaurants list.
+      this.props.locallyStoredRestaurants.forEach(place => {
+        if (this.state.map.getBounds().contains(place.geometry.location))
+          handleAllRestaurants.push(place);
+      });
+      this.setState({
+        getNearbySearchResults: handleAllRestaurants
+      });
+
+      this.props.sendNearbySearchData(this.state.getNearbySearchResults);
+    };
+    // Call nearbySearch from google Places Service
+    this.service().nearbySearch(searchBounds, handleSearchresults);
+  };
 
   detailsRequest() {
     /// Getting Places reviews for the active restaurant
