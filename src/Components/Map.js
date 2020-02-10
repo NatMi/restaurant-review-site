@@ -25,7 +25,7 @@ class Map extends Component {
       this.props.sendReviewsForActiveItem(this.state.loadReviewsForActiveItem);
     };
     this.requestForActiveStatusFromMarker = requestedPlaceId => {
-      this.state.getNearbySearchResults.forEach(restaurant => {
+      this.props.restaurantsToShow.forEach(restaurant => {
         if (restaurant.place_id === requestedPlaceId) {
           this.setState({
             activeRestaurant: restaurant
@@ -129,14 +129,6 @@ class Map extends Component {
   }
 
   nearbySearch = () => {
-    this.state.restaurantMarkerList.forEach(marker => {
-      marker.setMap(null);
-    });
-    this.setState({
-      getNearbySearchResults: [],
-      restaurantMarkerList: []
-    });
-
     // Set search bounds and callback to deal with nearbySearch results.
     let searchBounds = {
       bounds: this.state.map.getBounds(),
@@ -144,35 +136,29 @@ class Map extends Component {
     };
 
     let handleSearchresults = (results, status) => {
-      this.setState({
-        getNearbySearchResults: []
-      });
+      let handleAllRestaurants = [];
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        results.forEach(place => {
-          this.setState(prevState => ({
-            getNearbySearchResults: [...prevState.getNearbySearchResults, place]
-          }));
-        });
+        handleAllRestaurants = results;
       }
-
-      // Check if any restaurant from json file is contained within current google map bounds. If yes, add to visible restaurants list.
+      // Check if any locally stored restaurant is contained within current google map bounds. If yes, add to visible restaurants list.
       this.state.locallyStoredRestaurants.forEach(place => {
         if (this.state.map.getBounds().contains(place.geometry.location))
-          this.setState(prevState => ({
-            getNearbySearchResults: [...prevState.getNearbySearchResults, place]
-          }));
+          handleAllRestaurants.push(place);
+      });
+      this.setState({
+        getNearbySearchResults: handleAllRestaurants
       });
 
       this.props.sendRestaurantData(this.state.getNearbySearchResults);
-
-      this.renderMarkers();
     };
-
     // Call nearbySearch from google Places Service
     this.service().nearbySearch(searchBounds, handleSearchresults);
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.restaurantsToShow !== this.props.restaurantsToShow) {
+      this.renderMarkers();
+    }
     // 2. check if new activeRestaurant and old activeMarker exist, if there's no new restaurant change old activeMarker's icon to not active and replace it with false value
     // this applies when user clicks "back to results"
     if (prevProps.activeRestaurant !== this.props.activeRestaurant) {
@@ -279,6 +265,13 @@ class Map extends Component {
   }
 
   renderMarkers() {
+    this.state.restaurantMarkerList.forEach(marker => {
+      marker.setMap(null);
+    });
+    this.setState({
+      restaurantMarkerList: []
+    });
+
     //user's location marker
     new window.google.maps.Marker({
       position: this.state.usersPosition,
@@ -294,7 +287,7 @@ class Map extends Component {
       }
     };
 
-    this.state.getNearbySearchResults.forEach(restaurant => {
+    this.props.restaurantsToShow.forEach(restaurant => {
       let restaurantMarker = new window.google.maps.Marker({
         place_id: restaurant.place_id,
         position: restaurant.geometry.location,
@@ -303,34 +296,38 @@ class Map extends Component {
         icon: markerColor(restaurant)
       });
       // update state with marker of new restaurant
-      this.setState(prevState => ({
-        restaurantMarkerList: [
-          ...prevState.restaurantMarkerList,
-          restaurantMarker
-        ]
-      }));
-
-      // --------> CLICK EVENT: restaurant marker <--------
-      this.state.restaurantMarkerList.forEach(marker => {
-        marker.addListener("click", () => {
-          // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
-          if (
-            this.state.activeMarker !== false &&
-            this.state.activeRestaurant.place_id !== marker.place_id
-          ) {
-            this.state.activeMarker.setIcon(defaultRestaurantIcon);
-          }
-          // 2. If the marker which was clicked is not set as active yet, update state and change its icon to active
-          if (marker.place_id !== this.state.activeRestaurant.place_id) {
-            this.setState({
-              activeMarker: marker
+      this.setState(
+        prevState => ({
+          restaurantMarkerList: [
+            ...prevState.restaurantMarkerList,
+            restaurantMarker
+          ]
+        }),
+        () => {
+          // --------> CLICK EVENT: restaurant marker <--------
+          this.state.restaurantMarkerList.forEach(marker => {
+            marker.addListener("click", () => {
+              console.log("click");
+              // 1. If there is any active restaurant in state, and it's not the same as the one clicked, change its icon back to default
+              if (
+                this.state.activeMarker !== false &&
+                this.state.activeRestaurant.place_id !== marker.place_id
+              ) {
+                this.state.activeMarker.setIcon(defaultRestaurantIcon);
+              }
+              // 2. If the marker which was clicked is not set as active yet, update state and change its icon to active
+              if (marker.place_id !== this.state.activeRestaurant.place_id) {
+                this.setState({
+                  activeMarker: marker
+                });
+                marker.setIcon(activeRestaurantIcon);
+                // 3. pass place_id of the clicked marker to App
+                this.requestForActiveStatusFromMarker(marker.place_id);
+              }
             });
-            marker.setIcon(activeRestaurantIcon);
-            // 3. pass place_id of the clicked marker to App
-            this.requestForActiveStatusFromMarker(marker.place_id);
-          }
-        });
-      });
+          });
+        }
+      );
     });
   }
 

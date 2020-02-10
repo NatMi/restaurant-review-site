@@ -96,6 +96,7 @@ class App extends Component {
               />
               <Map
                 id="googleMap"
+                restaurantsToShow={this.state.filteredRestaurantList}
                 restaurantsAddedByUser={this.state.restaurantsAddedByUser}
                 sendRestaurantData={this.getNearbySearchData}
                 activeRestaurant={this.state.activeRestaurant}
